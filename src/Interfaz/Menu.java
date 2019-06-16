@@ -80,6 +80,11 @@ public class Menu extends javax.swing.JFrame {
 
         btnViejaSimulacion.setFont(new java.awt.Font("Malayalam MN", 1, 14)); // NOI18N
         btnViejaSimulacion.setText("Cargar una simulación");
+        btnViejaSimulacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViejaSimulacionActionPerformed(evt);
+            }
+        });
 
         btnNuevaSimulacion.setFont(new java.awt.Font("Malayalam MN", 1, 14)); // NOI18N
         btnNuevaSimulacion.setText("Crear una nueva simulación");
@@ -151,6 +156,13 @@ public class Menu extends javax.swing.JFrame {
         simulacion.setVisible(true);
                 
     }//GEN-LAST:event_btnNuevaSimulacionActionPerformed
+
+    private void btnViejaSimulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViejaSimulacionActionPerformed
+        CargarUnaSimulacion simulacion = new CargarUnaSimulacion();
+        simulacion.setLocationRelativeTo(null);
+        simulacion.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnViejaSimulacionActionPerformed
 
     /**
      * @param args the command line arguments

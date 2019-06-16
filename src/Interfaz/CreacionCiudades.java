@@ -121,7 +121,11 @@ public class CreacionCiudades extends javax.swing.JFrame {
         
         
         
-        // simulacion.setVisible(false);
+        GuardarArchivo guardarA = new GuardarArchivo(ciudades, valoresCalculo, datosSimulacion,matrizDistancias);
+        guardarA.setLocationRelativeTo(null);
+        guardarA.setVisible(true);
+        simulacion.setVisible(false);
+        this.setVisible(false);
     }//GEN-LAST:event_btnContinuarActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
