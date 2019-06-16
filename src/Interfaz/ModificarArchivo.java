@@ -5,8 +5,10 @@
  */
 package Interfaz;
 
+import Algoritmo.Archivo;
 import javax.swing.JOptionPane;
 import java.io.*;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -15,7 +17,12 @@ import java.io.*;
 public class ModificarArchivo extends javax.swing.JFrame {
 
     static public int numCiudades, maxCiudades;
-    static File archivo;
+    static public File archivo;
+    static public String [] ciudadesFinales;
+    static public int[][] matrizDistanciaFinal;
+    JFileChooser seleccionado = new JFileChooser();
+    Archivo gestion = new Archivo();
+    
     public ModificarArchivo(int numCiudades, int maxCiudades, File archivo) {
         this.numCiudades=numCiudades;
         this.maxCiudades=maxCiudades;
@@ -40,9 +47,10 @@ public class ModificarArchivo extends javax.swing.JFrame {
         listaCiudades = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         btnSalir = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jLabel1.setFont(new java.awt.Font("Malayalam MN", 0, 14)); // NOI18N
         jLabel1.setText("Escribe el nombre de la ciudad que quieres agregar");
@@ -83,10 +91,10 @@ public class ModificarArchivo extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Continuar con la Simulación");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setText("Guardar y continuar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
 
@@ -120,7 +128,7 @@ public class ModificarArchivo extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58)
-                .addComponent(jButton1)
+                .addComponent(btnGuardar)
                 .addGap(102, 102, 102))
         );
         layout.setVerticalGroup(
@@ -145,7 +153,7 @@ public class ModificarArchivo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(47, 47, 47))
         );
 
@@ -227,14 +235,62 @@ public class ModificarArchivo extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if(numCiudades<4){
             JOptionPane.showMessageDialog(null, "Mínimo tiene que añadir 4 ciudades a la simulación.\nUsted añadió solo " + numCiudades,
                     "Error", JOptionPane.ERROR_MESSAGE);
         } else {
+            ciudadesFinales = new String[listaCiudades.getItemCount()];
+            for (int i = 0; i < ciudadesFinales.length; i++) {
+                ciudadesFinales[i]=listaCiudades.getItemAt(i);
+            }
             
+            matrizDistanciaFinal=new int[listaCiudades.getItemCount()][listaCiudades.getItemCount()];
+            for (int i = 0; i < matrizDistanciaFinal.length; i++) {
+                for (int j = 0; j < matrizDistanciaFinal[0].length; j++) {
+                    matrizDistanciaFinal[i][j]=0;
+                }
+            }
+            
+            //Para llenar la nueva matriz de distancias de acuerdo a las modificaciones del usuario, se debe evaluar si esta
+            // nueva matriz creada tiene algo de compatibilidad con la matriz original del archivo. En caso de que así sea, 
+            // se transfiere los datos.
+            for (int i = 0; i < ciudadesFinales.length; i++) {
+                for (int j = 0; j < CargarUnaSimulacion.ciudades.length; j++) {
+                    if(CargarUnaSimulacion.ciudades[j]==ciudadesFinales[i]){
+                        
+                        for (int k = 0; k < ciudadesFinales.length; k++) {
+                            for (int l = 0; l < CargarUnaSimulacion.ciudades.length; l++) {
+                                if(matrizDistanciaFinal[i][k]==0){
+                                    
+                                    if((i!=k)&&(j!=l)&&(CargarUnaSimulacion.ciudades[l]==ciudadesFinales[k])){
+                                        matrizDistanciaFinal[i][k]=CargarUnaSimulacion.matrizDistancias[j][l];
+                                        matrizDistanciaFinal[k][i]=CargarUnaSimulacion.matrizDistancias[j][l];
+                                }
+                                }
+                            }  
+                        }
+                    }
+                }
+            }
+            CargarUnaSimulacion.ciudadesFinales=this.ciudadesFinales;
+            CargarUnaSimulacion.matrizDistanciaFinal=matrizDistanciasFinal(this.matrizDistanciaFinal,this.ciudadesFinales);
+            String contenido=Archivo.generarContenidoArchivo(CargarUnaSimulacion.matrizDistanciaFinal, 
+                    CargarUnaSimulacion.ciudadesFinales, CargarUnaSimulacion.valoresCalculos, CargarUnaSimulacion.datosSimulacion);
+            if(this.seleccionado.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION){
+                this.archivo = seleccionado.getSelectedFile();
+                if(this.archivo.getName().endsWith("txt")){
+                    gestion.GuardarTexto(archivo, contenido);
+                    CargarUnaSimulacion.archivo=this.archivo;
+                }else{
+                    JOptionPane.showMessageDialog(null, "El texto se debe guardar en un formato de texto.\n(Agréguele \".txt\" al nombre "
+                            + "de su archivo cuando lo vaya a guardar).");
+                }
+            }
+            CargarUnaSimulacion.txtArchivo.setText(contenido);
+            this.setVisible(false);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -270,12 +326,48 @@ public class ModificarArchivo extends javax.swing.JFrame {
             }
         });
     }
+    
+    public static int[][] matrizDistanciasFinal(int[][] matrizDistancias, String[] ciudades){
+        String aux;
+        for (int i = 0; i < matrizDistancias.length; i++) {
+            for (int j = 0; j < matrizDistancias[0].length; j++) {
+                // Como el grafo es no dirigido, se hace esta validación, ya que la distancia de A a B, es la misma que 
+                // la de B a A.
+                if(matrizDistancias[i][j]==0){
+                    // Se realiza esta validación para no crear una distancia de una ciudad a ella misma.
+                    if(i!=j){ 
+                        aux=JOptionPane.showInputDialog(null, "Ingresa la distancia de " + ciudades[i] + " a " + ciudades[j]);
+                        //Verificando que la distancia que introdujo es un entero positivo.
+                        if(!NuevaSimulacion.isInt(aux) || (NuevaSimulacion.isInt(aux)&&Integer.parseInt(aux)<1)){
+                            
+                                while(!NuevaSimulacion.isInt(aux) || (NuevaSimulacion.isInt(aux)&&Integer.parseInt(aux)<1)){
+                                
+                                    if(!NuevaSimulacion.isInt(aux)){
+                                        JOptionPane.showMessageDialog(null, "El número que introdujo NO es un entero y DEBE ser un entero.", 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    if(NuevaSimulacion.isInt(aux) && Integer.parseInt(aux)<1){
+                                        JOptionPane.showMessageDialog(null, "No puede introducir números negativos o ceros como distancia entre ciudades.", 
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    aux=JOptionPane.showInputDialog(null, "Ingresa la distancia de " + ciudades[i] + " a " + ciudades[j]);
+                                }
+                        }
+                        //Se llena la matriz con la misma distancia desde A a B, que desde B a A.
+                        matrizDistancias[i][j]=Integer.parseInt(aux);
+                        matrizDistancias[j][i]=Integer.parseInt(aux);
+                    }
+                }
+            }
+        }
+        return matrizDistancias;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

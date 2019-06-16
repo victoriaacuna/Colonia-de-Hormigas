@@ -238,6 +238,29 @@ public class Archivo {
         return datosSimulacion;
     }
     
+    public static String generarContenidoArchivo(int[][] matrizDistancias, String[] ciudades, double[] valoresCalculo, 
+            int[] datosSimulacion){
+        
+        String contenido="Nombre de las ciudades:\n";
+        for (int i = 0; i < ciudades.length; i++) {
+            contenido+=ciudades[i]+"\n";
+        }
+        contenido+="\nDistancia entre las ciudades:\n";
+        for (int i = 0; i < matrizDistancias.length; i++) {
+            for (int j = 0; j < matrizDistancias[0].length; j++) {
+                if(i!=j){
+                    contenido+="De " + ciudades[i]+" a " + ciudades[j]+" (km):\n"+matrizDistancias[i][j]+"\n";
+                }
+            }
+        }
+        contenido+="\nDatos de la simulacion:\n";
+        contenido+="Iteraciones:\n"+datosSimulacion[0]+"\nCantidad de hormigas:\n"+datosSimulacion[1];
+        contenido+="\nGrado de importancia de la feromona:\n"+valoresCalculo[0]+"\nGrado de visibilidad de la ciudad:\n"
+                +valoresCalculo[1]+"\nFactor de evaporacion:\n"+valoresCalculo[2];
+        
+        return contenido;
+    }
+    
     }
         
     

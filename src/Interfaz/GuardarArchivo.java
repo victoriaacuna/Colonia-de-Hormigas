@@ -32,26 +32,8 @@ public class GuardarArchivo extends javax.swing.JFrame {
         this.ciudades=ciudades;
         this.valoresCalculo=valoresCalculo;
         this.matrizDistancias = matrizDistancias;
-        
-        String contenido="Nombre de las ciudades:\n";
-        for (int i = 0; i < ciudades.length; i++) {
-            contenido+=ciudades[i]+"\n";
-        }
-        contenido+="\nDistancia entre las ciudades:\n";
-        for (int i = 0; i < matrizDistancias.length; i++) {
-            for (int j = 0; j < matrizDistancias[0].length; j++) {
-                if(i!=j){
-                    contenido+="De " + ciudades[i]+" a " + ciudades[j]+" (km):\n"+matrizDistancias[i][j]+"\n";
-                }
-            }
-        }
-        contenido+="\nDatos de la simulacion:\n";
-        contenido+="Iteraciones:\n"+datosSimulacion[0]+"\nCantidad de hormigas:\n"+datosSimulacion[1];
-        contenido+="\nGrado de importancia de la feromona:\n"+valoresCalculo[0]+"\nGrado de visibilidad de la ciudad:\n"
-                +valoresCalculo[1]+"\nFactor de evaporacion:\n"+valoresCalculo[2];
-        
+        String contenido=Archivo.generarContenidoArchivo(matrizDistancias, ciudades, valoresCalculo, datosSimulacion);
         txtArchivo.setText(contenido);
-        
         this.contenido=contenido;
     }
     
@@ -156,12 +138,17 @@ public class GuardarArchivo extends javax.swing.JFrame {
                         + "de su archivo cuando lo vaya a guardar).");
             }
         }
-        
-        
+        Simulacion s = new Simulacion(this.matrizDistancias, this.ciudades, this.datosSimulacion, this.valoresCalculo);
+        s.setLocationRelativeTo(null);
+        s.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_GuardarActionPerformed
 
     private void btnNoGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNoGuardarActionPerformed
-        // TODO add your handling code here:
+        Simulacion s = new Simulacion(this.matrizDistancias, this.ciudades, this.datosSimulacion, this.valoresCalculo);
+        s.setLocationRelativeTo(null);
+        s.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnNoGuardarActionPerformed
 
     /**

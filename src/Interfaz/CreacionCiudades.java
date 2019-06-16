@@ -105,11 +105,21 @@ public class CreacionCiudades extends javax.swing.JFrame {
                     // Se realiza esta validación para no crear una distancia de una ciudad a ella misma.
                     if(i!=j){ 
                         aux=JOptionPane.showInputDialog(null, "Ingresa la distancia de " + ciudades[i] + " a " + ciudades[j]);
-                        //Verificando que la distancia que introdujo es un entero.
-                        while(!NuevaSimulacion.isInt(aux)){
-                            JOptionPane.showMessageDialog(this, "El número que introdujo NO es un entero y DEBE ser un entero.", 
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                            aux=JOptionPane.showInputDialog(null, "Ingresa la distancia de " + ciudades[i] + " a " + ciudades[j]);
+                        //Verificando que la distancia que introdujo es un entero positivo.
+                        if(!NuevaSimulacion.isInt(aux) || (NuevaSimulacion.isInt(aux)&&Integer.parseInt(aux)<1)){
+                            
+                                while(!NuevaSimulacion.isInt(aux) || (NuevaSimulacion.isInt(aux)&&Integer.parseInt(aux)<1)){
+                                
+                                    if(!NuevaSimulacion.isInt(aux)){
+                                        JOptionPane.showMessageDialog(this, "El número que introdujo NO es un entero y DEBE ser un entero.", 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    if(NuevaSimulacion.isInt(aux) && Integer.parseInt(aux)<1){
+                                        JOptionPane.showMessageDialog(this, "No puede introducir números negativos o ceros como distancia entre ciudades.", 
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    aux=JOptionPane.showInputDialog(null, "Ingresa la distancia de " + ciudades[i] + " a " + ciudades[j]);
+                                }
                         }
                         //Se llena la matriz con la misma distancia desde A a B, que desde B a A.
                         matrizDistancias[i][j]=Integer.parseInt(aux);
