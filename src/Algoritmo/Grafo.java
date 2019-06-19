@@ -6,10 +6,10 @@ public class Grafo {
     
     public String[] ciudades;
     public int[] datosSimulacion;
-    public double[] valoresCalculo;
+    public static double[] valoresCalculo;
     public int[][] matrizAdyacencia;
     public int[][] matrizDistancias;
-    public boolean[][] matrizVisitado;
+    public boolean[] visitado;
     public double[][] matrizFeromonas;
     
     
@@ -19,7 +19,7 @@ public class Grafo {
         this.datosSimulacion=datosSimulacion;
         this.valoresCalculo=valoresCalculo;
         this.matrizAdyacencia=inicializarMatrizAdyacencia();
-        this.matrizVisitado=inicializarMatrizVisitados();
+        this.visitado=inicializarVisitados();
         this.matrizFeromonas=inicializarMatrizFeromonas();
         
     }
@@ -38,28 +38,23 @@ public class Grafo {
         return matrizAdyacencia;
     }
     
-    public boolean[][] inicializarMatrizVisitados(){
-        boolean[][] matrizVisitado = new boolean[this.ciudades.length][this.ciudades.length];
-        for (int i = 0; i < matrizVisitado.length; i++) {
-            for (int j = 0; j < matrizVisitado[0].length; j++) {
-                if(i==j){
-                    matrizVisitado[i][j]=true;
-                } else {
-                    matrizVisitado[i][j]=false;
-                }
-            }
+    public boolean[] inicializarVisitados(){
+        boolean[]visitado = new boolean[this.ciudades.length];
+        for (int i = 0; i < visitado.length; i++) {
+            visitado[i]=false;
         }
-        return matrizVisitado;
+        return visitado;
     }
     
     public double[][] inicializarMatrizFeromonas(){
+        // Se inicializa el valor de la cantidad de feromonas en cada camino de acuerdo a 1/cantidad de ciudades;
         double[][] matrizFeromonas = new double[this.ciudades.length][this.ciudades.length];
         for (int i = 0; i < matrizFeromonas.length; i++) {
             for (int j = 0; j < matrizFeromonas[0].length; j++) {
                 if(i==j){
                     matrizFeromonas[i][j]=0.0;
                 } else {
-                    matrizFeromonas[i][j]=0.0;
+                    matrizFeromonas[i][j]=(1/ciudades.length);
                 }
             }
         }

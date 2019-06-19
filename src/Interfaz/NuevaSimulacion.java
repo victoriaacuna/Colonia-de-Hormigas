@@ -417,29 +417,37 @@ public class NuevaSimulacion extends javax.swing.JFrame {
                     // Que los valores de alfa, beta y rho sean números entero, entero y decimal respectivamente.
                     if(isInt(txtAlfa.getText()) && isInt(txtBeta.getText()) && isDouble(txtRho.getText())){
                         
-                        // Se crea un vector con los nombres de las ciudades elegidas.
-                        String ciudades [] = new String[numCiudades];
-                        for (int i = 0; i < ciudades.length; i++) {
-                            ciudades[i]=listCiudades.getItemAt(i);
+                        if(Double.parseDouble(txtRho.getText())>0 && Double.parseDouble(txtRho.getText())<=1){
+                            
+                            // Se crea un vector con los nombres de las ciudades elegidas.
+                            String ciudades [] = new String[numCiudades];
+                            for (int i = 0; i < ciudades.length; i++) {
+                                ciudades[i]=listCiudades.getItemAt(i);
+                            }
+
+                            // Se crea un vector con los valores de α, β y ρ.
+                            double valoresCalculo [] = new double[3];
+                            valoresCalculo[0]=Double.parseDouble(txtAlfa.getText());
+                            valoresCalculo[1]=Double.parseDouble(txtBeta.getText());
+                            valoresCalculo[2]=Double.parseDouble(txtRho.getText());
+
+                            // Se crea un vector con los datos de la cantidad de iteraciones y hormigas.
+                            int datosSimulacion [] = new int[2];
+                            datosSimulacion[0]=Integer.parseInt(txtIteraciones.getText());
+                            datosSimulacion[1]=Integer.parseInt(txtHormigas.getText());
+
+
+                            // Una vez validados todos los datos, se le pregunta al usuario si desea continuar.
+                            CreacionCiudades verificar = new CreacionCiudades(ciudades, valoresCalculo, datosSimulacion,this);
+                            verificar.setLocationRelativeTo(null);
+                            verificar.setVisible(true);
+                        
+                            
+                        } else {
+                            JOptionPane.showMessageDialog(this, "El valor de ρ debe ser mayor que 0 y menor o igual a 1.", 
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                            txtRho.setText("");
                         }
-                        
-                        // Se crea un vector con los valores de α, β y ρ.
-                        double valoresCalculo [] = new double[3];
-                        valoresCalculo[0]=Double.parseDouble(txtAlfa.getText());
-                        valoresCalculo[1]=Double.parseDouble(txtBeta.getText());
-                        valoresCalculo[2]=Double.parseDouble(txtRho.getText());
-                        
-                        // Se crea un vector con los datos de la cantidad de iteraciones y hormigas.
-                        int datosSimulacion [] = new int[2];
-                        datosSimulacion[0]=Integer.parseInt(txtIteraciones.getText());
-                        datosSimulacion[1]=Integer.parseInt(txtHormigas.getText());
-                        
-                        
-                        // Una vez validados todos los datos, se le pregunta al usuario si desea continuar.
-                        CreacionCiudades verificar = new CreacionCiudades(ciudades, valoresCalculo, datosSimulacion,this);
-                        verificar.setLocationRelativeTo(null);
-                        verificar.setVisible(true);
-                        
                         
                         
                     } else {

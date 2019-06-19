@@ -133,15 +133,16 @@ public class GuardarArchivo extends javax.swing.JFrame {
             archivo = seleccionado.getSelectedFile();
             if(archivo.getName().endsWith("txt")){
                 gestion.GuardarTexto(archivo, contenido);
+                Simulacion s = new Simulacion(this.matrizDistancias, this.ciudades, this.datosSimulacion, this.valoresCalculo);
+                s.setLocationRelativeTo(null);
+                s.setVisible(true);
+                this.setVisible(false);
             }else{
                 JOptionPane.showMessageDialog(null, "El texto se debe guardar en un formato de texto.\n(Agréguele \".txt\" al nombre "
                         + "de su archivo cuando lo vaya a guardar).");
             }
         }
-        Simulacion s = new Simulacion(this.matrizDistancias, this.ciudades, this.datosSimulacion, this.valoresCalculo);
-        s.setLocationRelativeTo(null);
-        s.setVisible(true);
-        this.setVisible(false);
+        
     }//GEN-LAST:event_GuardarActionPerformed
 
     private void btnNoGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNoGuardarActionPerformed

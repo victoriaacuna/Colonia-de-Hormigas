@@ -138,6 +138,14 @@ public class CargarUnaSimulacion extends javax.swing.JFrame {
                         txtArchivo.setText(contenido);
                         btnModificar.setEnabled(true);
                         btnSeleccionar.setEnabled(true);
+                        this.ciudades = new String[Archivo.numCiudades(this.archivo)];
+                        this.ciudades= ciudadesDelArchivo(this.archivo, ciudades);
+                        this.matrizDistancias=new int[ciudades.length][ciudades.length];
+                        this.matrizDistancias=Archivo.distanciasCiudades(ciudades.length, this.archivo);
+                        this.datosSimulacion = new int [2];
+                        this.datosSimulacion=Archivo.datosSimulacion(this.archivo, datosSimulacion);
+                        valoresCalculos = new double[3];
+                        valoresCalculos=Archivo.valoresCalculos(archivo, valoresCalculos);
                         
                     } else {
                         JOptionPane.showMessageDialog(null, "El archivo que seleccionó, no contiene la información adecuada "
@@ -151,16 +159,6 @@ public class CargarUnaSimulacion extends javax.swing.JFrame {
                 }
             }
         }
-        
-        this.ciudades = new String[Archivo.numCiudades(this.archivo)];
-        this.ciudades= ciudadesDelArchivo(this.archivo, ciudades);
-        this.matrizDistancias=new int[ciudades.length][ciudades.length];
-        this.matrizDistancias=Archivo.distanciasCiudades(ciudades.length, this.archivo);
-        this.datosSimulacion = new int [2];
-        this.datosSimulacion=Archivo.datosSimulacion(this.archivo, datosSimulacion);
-        valoresCalculos = new double[3];
-        valoresCalculos=Archivo.valoresCalculos(archivo, valoresCalculos);
-        
         
     }//GEN-LAST:event_btnSubirActionPerformed
 

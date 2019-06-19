@@ -113,10 +113,10 @@ public class ModificarArchivo extends javax.swing.JFrame {
                 .addContainerGap(112, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(58, 58, 58)
-                .addComponent(btnGuardar)
-                .addGap(102, 102, 102))
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51)
+                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(72, 72, 72))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,7 +138,7 @@ public class ModificarArchivo extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(47, 47, 47))
@@ -269,13 +269,14 @@ public class ModificarArchivo extends javax.swing.JFrame {
                 if(this.archivo.getName().endsWith("txt")){
                     gestion.GuardarTexto(archivo, contenido);
                     CargarUnaSimulacion.archivo=this.archivo;
+                    CargarUnaSimulacion.txtArchivo.setText(contenido);
+                    this.setVisible(false);
                 }else{
                     JOptionPane.showMessageDialog(null, "El texto se debe guardar en un formato de texto.\n(Agréguele \".txt\" al nombre "
                             + "de su archivo cuando lo vaya a guardar).");
                 }
             }
-            CargarUnaSimulacion.txtArchivo.setText(contenido);
-            this.setVisible(false);
+            
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
