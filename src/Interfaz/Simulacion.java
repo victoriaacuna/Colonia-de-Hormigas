@@ -2,6 +2,9 @@
 package Interfaz;
 
 import Algoritmo.Circulo;
+import Algoritmo.Grafo;
+import Algoritmo.Hormiga;
+import Algoritmo.Iteracion;
 import java.awt.Graphics;
 
 
@@ -11,6 +14,11 @@ public class Simulacion extends javax.swing.JFrame {
     public static String[] ciudades;
     public static int[] datosSimulacion;
     public static double[] valoresCalculo;
+    public static Grafo grafo;
+    public static Iteracion[] iteracion;
+    public static Hormiga[] hormigas;
+    public static Iteracion iteracionActual;
+    public static Hormiga hormigaActual;
    
     public Simulacion(int[][] matrizDistancias, String[] ciudades, int[] datosSimulacion, double[] valoresCalculo) {
         initComponents();
@@ -18,6 +26,21 @@ public class Simulacion extends javax.swing.JFrame {
         this.ciudades=ciudades;
         this.datosSimulacion=datosSimulacion;
         this.valoresCalculo=valoresCalculo;
+        Grafo grafo = new Grafo(this.matrizDistancias, this.ciudades, this.datosSimulacion, this.valoresCalculo);
+        this.grafo=grafo;
+        this.iteracion = new Iteracion[this.datosSimulacion[0]];
+        this.hormigas = new Hormiga[this.datosSimulacion[1]];
+        for (int i = 0; i < this.iteracion.length; i++) {
+            this.iteracion[i]=new Iteracion(hormigas);
+            for (int j = 0; j < iteracion[i].hormigas.length; j++) {
+                iteracion[i].hormigas[j]=new Hormiga(j+1);
+                iteracion[i].hormigas[j].ciudadesDisponibles=iteracion[i].hormigas[j].vectorCiudadesDisponibles(this.ciudades);
+            }
+        }
+        
+        this.iteracionActual=iteracion[0];
+        this.hormigaActual=iteracion[0].hormigas[0];
+        
         
 //        for (int i = 0; i < ciudades.length; i++) {
 //            System.out.println(ciudades[i]);
@@ -63,6 +86,11 @@ public class Simulacion extends javax.swing.JFrame {
         );
 
         btnComenzarIteracion.setText("Comenzar iteración");
+        btnComenzarIteracion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnComenzarIteracionActionPerformed(evt);
+            }
+        });
 
         btnContinuar.setText("Continuar");
         btnContinuar.setEnabled(false);
@@ -93,12 +121,13 @@ public class Simulacion extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addComponent(Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnComenzarIteracion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnContinuar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnMostrarGrafo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnComenzarIteracion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnContinuar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE))
+                    .addComponent(btnMostrarGrafo, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -112,9 +141,9 @@ public class Simulacion extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(43, 43, 43)
                         .addComponent(btnContinuar, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
+                        .addGap(51, 51, 51)
                         .addComponent(btnMostrarGrafo, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
+                        .addGap(37, 37, 37)
                         .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
@@ -138,8 +167,15 @@ public class Simulacion extends javax.swing.JFrame {
             circulos[i].dibujarCiudad(g);
         }
         
-        
     }//GEN-LAST:event_btnMostrarGrafoActionPerformed
+
+    private void btnComenzarIteracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComenzarIteracionActionPerformed
+        btnContinuar.setEnabled(true);
+        
+        
+        
+        this.setEnabled(false);
+    }//GEN-LAST:event_btnComenzarIteracionActionPerformed
 
     /**
      * @param args the command line arguments

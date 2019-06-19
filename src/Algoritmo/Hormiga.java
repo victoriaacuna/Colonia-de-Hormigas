@@ -1,6 +1,8 @@
 
 package Algoritmo;
 
+import java.util.Random;
+
 
 public class Hormiga {
     
@@ -14,28 +16,66 @@ public class Hormiga {
     public double cantFeroRecorridas; // Guarda el total de la cantidad de feromonas recorridas;
     public double[] valoresCalculo; // Valores de alfa, beta, ro.
     public int Q;
+    public Ciudad primera;
+    public Ciudad ultima;
+    String nombre;
     
-    public Hormiga(){
-        this.Q=0;
-        this.valoresCalculo=Grafo.valoresCalculo;        
+    public Hormiga(int num){
+        this.Q=1;
+        this.valoresCalculo=Grafo.valoresCalculo;
+        this.ciudadesRecorridas=0;
+        this.nombre="Hormiga "+num;
     }
     
     
     public void moverse(Hormiga H, int cantH){
-        // Elige la ciudad;
-        Ciudad elegida = elegirCiudad(H,cantH);
-        // Actualiza la distancia recorrida.
-        H.distRecorrida=H.distRecorrida + H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].distancia;
-        // Actualiza el recorrdio.
-        H.Recorrido[H.ciudadesRecorridas]=elegida; // El atributo ciudadesRecorridas es un contador;
-        // Actualiza la cantidad de feromonas recorridas;
-        H.cantFeroRecorridas= H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
-        // Actualiza el contador de las ciudades recorrdias;
-        H.ciudadesRecorridas++;
-        // Marca la ciudad a la que se movió como no disponible (ya visitada).
-        H.ciudadesDisponibles[elegida.numCiudad].disponible=false;
-        // Actualiza la ciudad actual en la que se encuentra la hormiga.
-        H.ciudadActual=elegida;
+        
+        if(H.ciudadesRecorridas>H.ciudadesDisponibles.length){
+            // IMPRIMIR Y PINTAR
+            
+            
+        } else {
+            if(H.ciudadesRecorridas==0){
+            Random r = new Random();
+                int random= r.nextInt(H.ciudadesDisponibles.length+1);
+                H.primera=H.ciudadesDisponibles[random];
+                H.ciudadActual=H.ciudadesDisponibles[random];
+                H.ciudadesDisponibles[random].disponible=false;
+                H.Recorrido[H.ciudadesRecorridas]=H.ciudadActual;
+                H.ciudadesRecorridas++;
+            } else if(H.ciudadesRecorridas<H.ciudadesDisponibles.length && H.ciudadesRecorridas>0){
+                // Elige la ciudad;
+                Ciudad elegida = elegirCiudad(H,cantH);
+                // Actualiza la distancia recorrida.
+                H.distRecorrida=H.distRecorrida + H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].distancia;
+                // Actualiza el recorrdio.
+                H.Recorrido[H.ciudadesRecorridas]=elegida; // El atributo ciudadesRecorridas es un contador;
+                // Actualiza la cantidad de feromonas recorridas;
+                H.cantFeroRecorridas= H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                // Actualiza el contador de las ciudades recorrdias;
+                H.ciudadesRecorridas++;
+                // Marca la ciudad a la que se movió como no disponible (ya visitada).
+                H.ciudadesDisponibles[elegida.numCiudad].disponible=false;
+                // Actualiza la ciudad actual en la que se encuentra la hormiga.
+                H.ciudadActual=elegida;
+                if(H.ciudadesRecorridas==H.ciudadesDisponibles.length-1){
+                    H.ultima=elegida;
+                }
+            } else {
+                Ciudad elegida = H.primera;
+                H.distRecorrida=H.distRecorrida + H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].distancia;
+                // Actualiza el recorrdio.
+                H.Recorrido[H.ciudadesRecorridas]=elegida; // El atributo ciudadesRecorridas es un contador;
+                // Actualiza la cantidad de feromonas recorridas;
+                H.cantFeroRecorridas= H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                // Actualiza el contador de las ciudades recorrdias;
+                H.ciudadesRecorridas++;
+                // Marca la ciudad a la que se movió como no disponible (ya visitada).
+                H.ciudadesDisponibles[elegida.numCiudad].disponible=false;
+                // Actualiza la ciudad actual en la que se encuentra la hormiga.
+                H.ciudadActual=elegida;
+            }
+            }
         
     }
     
@@ -112,6 +152,14 @@ public class Hormiga {
                 ultima.caminos[i][j].cantFero=((1-ro)*ultima.caminos[i][j].cantFero);
             }
         }
+    }
+    
+    public Ciudad[] vectorCiudadesDisponibles(String[] ciudades){
+        Ciudad[] ciudad = new Ciudad[ciudades.length];
+        for (int i = 0; i < 10; i++) {
+            ciudad[i]= new Ciudad(ciudades[i],i);
+        }
+        return ciudad;
     }
     
 }
