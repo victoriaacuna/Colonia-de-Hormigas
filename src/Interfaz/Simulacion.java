@@ -1,6 +1,7 @@
 
 package Interfaz;
 
+import Algoritmo.Camino;
 import Algoritmo.Circulo;
 import Algoritmo.Grafo;
 import Algoritmo.Hormiga;
@@ -10,36 +11,42 @@ import java.awt.Graphics;
 
 public class Simulacion extends javax.swing.JFrame {
 
-    public static int[][] matrizDistancias;
-    public static String[] ciudades;
-    public static int[] datosSimulacion;
-    public static double[] valoresCalculo;
+//    public static int[][] matrizDistancias;
+//    public static String[] ciudades;
+//    public static int[] datosSimulacion;
+//    public static double[] valoresCalculo;
     public static Grafo grafo;
-    public static Iteracion[] iteracion;
+//    public static Iteracion[] iteracion;
     public static Hormiga[] hormigas;
-    public static Iteracion iteracionActual;
-    public static Hormiga hormigaActual;
+    public static int contHormigas, contIteracion;
+//    public static Iteracion iteracionActual;
+//    public static Hormiga hormigaActual;
    
     public Simulacion(int[][] matrizDistancias, String[] ciudades, int[] datosSimulacion, double[] valoresCalculo) {
         initComponents();
-        this.matrizDistancias=matrizDistancias;
-        this.ciudades=ciudades;
-        this.datosSimulacion=datosSimulacion;
-        this.valoresCalculo=valoresCalculo;
-        Grafo grafo = new Grafo(this.matrizDistancias, this.ciudades, this.datosSimulacion, this.valoresCalculo);
+//        this.matrizDistancias=matrizDistancias;
+//        this.ciudades=ciudades;
+//        this.datosSimulacion=datosSimulacion;
+//        this.valoresCalculo=valoresCalculo;
+        Grafo grafo = new Grafo(matrizDistancias, ciudades, datosSimulacion, valoresCalculo);
         this.grafo=grafo;
-        this.iteracion = new Iteracion[this.datosSimulacion[0]];
-        this.hormigas = new Hormiga[this.datosSimulacion[1]];
-        for (int i = 0; i < this.iteracion.length; i++) {
-            this.iteracion[i]=new Iteracion(hormigas);
-            for (int j = 0; j < iteracion[i].hormigas.length; j++) {
-                iteracion[i].hormigas[j]=new Hormiga(j+1);
-                iteracion[i].hormigas[j].ciudadesDisponibles=iteracion[i].hormigas[j].vectorCiudadesDisponibles(this.ciudades);
+        this.grafo.iteracionesSimulacion = new Iteracion[grafo.datosSimulacion[0]];
+        this.hormigas = new Hormiga[grafo.datosSimulacion[1]];
+        for (int i = 0; i < this.grafo.iteracionesSimulacion.length; i++) {
+            this.grafo.iteracionesSimulacion[i]=new Iteracion(hormigas);
+            for (int j = 0; j < this.grafo.iteracionesSimulacion[i].hormigas.length; j++) {
+                this.grafo.iteracionesSimulacion[i].hormigas[j]=new Hormiga(j+1);
+                this.grafo.iteracionesSimulacion[i].hormigas[j].ciudadesDisponibles=
+                        this.grafo.iteracionesSimulacion[i].hormigas[j].vectorCiudadesDisponibles(this.grafo.ciudades);
             }
         }
+        this.contIteracion=0;
+        this.contHormigas=0;
         
-        this.iteracionActual=iteracion[0];
-        this.hormigaActual=iteracion[0].hormigas[0];
+        
+        
+//        this.iteracionActual=iteracion[0];
+//        this.hormigaActual=iteracion[0].hormigas[0];
         
         
 //        for (int i = 0; i < ciudades.length; i++) {
@@ -159,12 +166,12 @@ public class Simulacion extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnMostrarGrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarGrafoActionPerformed
-        Circulo[] circulos = new Circulo[this.ciudades.length];
-        circulos = generarVectorCirculos();
+//        Circulo[] circulos = new Circulo[this.ciudades.length];
+//        circulos = generarVectorCirculos();
  
         Graphics g = Panel.getGraphics();
-        for (int i = 0; i < ciudades.length; i++) {
-            circulos[i].dibujarCiudad(g);
+        for (int i = 0; i < this.grafo.ciudades.length; i++) {
+            this.grafo.circulos[i].dibujarCiudad(g);
         }
         
     }//GEN-LAST:event_btnMostrarGrafoActionPerformed
@@ -173,6 +180,10 @@ public class Simulacion extends javax.swing.JFrame {
         btnContinuar.setEnabled(true);
         
         
+        // Inicializa la matriz camino de la primera hormiga correspondiente a la iteración que se está realizando;
+        grafo.iteracionesSimulacion[contIteracion].hormigas[0].inicializarCaminos(grafo.matrizDistancias, grafo.matrizFeromonas);
+        grafo.iteracionesSimulacion[contIteracion].hormigas[0].moverse(grafo.iteracionesSimulacion[contIteracion].hormigas[0], 
+                grafo.datosSimulacion[1], grafo);
         
         this.setEnabled(false);
     }//GEN-LAST:event_btnComenzarIteracionActionPerformed
@@ -207,194 +218,194 @@ public class Simulacion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Simulacion(matrizDistancias,ciudades,datosSimulacion,valoresCalculo).setVisible(true);
+                new Simulacion(grafo.matrizDistancias,grafo.ciudades,grafo.datosSimulacion,grafo.valoresCalculo).setVisible(true);
             }
         });
     }
     
-    public Circulo[] generarVectorCirculos(){
-        Circulo[] circulos = new Circulo[this.ciudades.length];
-        //Mínimo va a tener cuatro ciudades, por lo tanto:
-        circulos[0]= new Circulo(50,50,this.ciudades[0]); 
-        circulos[1] = new Circulo(100,150,this.ciudades[1]); 
-        circulos[2] = new Circulo(350,80,this.ciudades[2]); 
-        circulos[3] = new Circulo(400,150,this.ciudades[3]); 
-        
-        if(ciudades.length>4){
-            switch(ciudades.length){
-                case 5:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]); 
-                    break;
-                case 6: 
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    break;
-                case 7:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    break;
-                case 8:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]);
-                    break;
-                case 9:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    break;
-                case 10:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]);
-                    break;
-                case 11:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    break;
-                case 12: 
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]);
-                    break;
-                case 13:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    break;
-                case 14:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]);
-                    break;
-                case 15:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
-                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
-                    break;
-                case 16:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
-                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
-                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
-                    break;
-                case 17:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
-                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
-                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
-                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
-                    break;
-                case 18:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
-                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
-                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
-                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
-                    circulos[17] = new Circulo(190,230,this.ciudades[17]);  
-                    break;
-                case 19:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
-                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
-                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
-                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
-                    circulos[17] = new Circulo(190,230,this.ciudades[17]); 
-                    circulos[18] = new Circulo(480,200,this.ciudades[18]); 
-                    break;
-                default:
-                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
-                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
-                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
-                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
-                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
-                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
-                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
-                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
-                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
-                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
-                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
-                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
-                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
-                    circulos[17] = new Circulo(190,230,this.ciudades[17]); 
-                    circulos[18] = new Circulo(480,200,this.ciudades[18]); 
-                    circulos[19] = new Circulo(550,50,this.ciudades[19]); 
-                    break;
-            }
-        }
-        return circulos;
-    }
-
+//    public Circulo[] generarVectorCirculos(){
+//        Circulo[] circulos = new Circulo[this.ciudades.length];
+//        //Mínimo va a tener cuatro ciudades, por lo tanto:
+//        circulos[0]= new Circulo(50,50,this.ciudades[0]); 
+//        circulos[1] = new Circulo(100,150,this.ciudades[1]); 
+//        circulos[2] = new Circulo(350,80,this.ciudades[2]); 
+//        circulos[3] = new Circulo(400,150,this.ciudades[3]); 
+//        
+//        if(ciudades.length>4){
+//            switch(ciudades.length){
+//                case 5:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]); 
+//                    break;
+//                case 6: 
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    break;
+//                case 7:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    break;
+//                case 8:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]);
+//                    break;
+//                case 9:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    break;
+//                case 10:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]);
+//                    break;
+//                case 11:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    break;
+//                case 12: 
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]);
+//                    break;
+//                case 13:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    break;
+//                case 14:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]);
+//                    break;
+//                case 15:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
+//                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
+//                    break;
+//                case 16:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
+//                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
+//                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
+//                    break;
+//                case 17:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
+//                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
+//                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
+//                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
+//                    break;
+//                case 18:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
+//                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
+//                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
+//                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
+//                    circulos[17] = new Circulo(190,230,this.ciudades[17]);  
+//                    break;
+//                case 19:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
+//                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
+//                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
+//                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
+//                    circulos[17] = new Circulo(190,230,this.ciudades[17]); 
+//                    circulos[18] = new Circulo(480,200,this.ciudades[18]); 
+//                    break;
+//                default:
+//                    circulos[4]= new Circulo(600,500,this.ciudades[4]);  
+//                    circulos[5] = new Circulo(330,180,this.ciudades[5]); 
+//                    circulos[6] = new Circulo(380,470,this.ciudades[6]); 
+//                    circulos[7] = new Circulo(230,400,this.ciudades[7]); 
+//                    circulos[8]= new Circulo(80,370,this.ciudades[8]); 
+//                    circulos[9] = new Circulo(120,500,this.ciudades[9]); 
+//                    circulos[10] = new Circulo(390,400,this.ciudades[10]); 
+//                    circulos[11] = new Circulo(250,50,this.ciudades[11]); 
+//                    circulos[12]= new Circulo(310,500,this.ciudades[12]); 
+//                    circulos[13] = new Circulo(20,310,this.ciudades[13]); 
+//                    circulos[14] = new Circulo(469,310,this.ciudades[14]); 
+//                    circulos[15] = new Circulo(360,250,this.ciudades[15]); 
+//                    circulos[16]= new Circulo(500,500,this.ciudades[16]); 
+//                    circulos[17] = new Circulo(190,230,this.ciudades[17]); 
+//                    circulos[18] = new Circulo(480,200,this.ciudades[18]); 
+//                    circulos[19] = new Circulo(550,50,this.ciudades[19]); 
+//                    break;
+//            }
+//        }
+//        return circulos;
+//    }
+//
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Panel;
     private javax.swing.JButton btnComenzarIteracion;

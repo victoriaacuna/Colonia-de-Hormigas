@@ -12,5 +12,7 @@ public class Ciudad {
         this.numCiudad=numCiudad;
         this.disponible=true; // Al iniciar, siempre puede ser visitada porque no lo ha sido previamente.
     }
-    
+    public Ciudad(){
+        
+    }
 }
