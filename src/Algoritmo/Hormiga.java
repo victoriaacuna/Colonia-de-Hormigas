@@ -32,12 +32,19 @@ public class Hormiga {
         
         if(H.ciudadesRecorridas>H.ciudadesDisponibles.length){
             // IMPRIMIR Y PINTAR
+            for (int i = 0; i < g.matrizFeromonas.length; i++) {
+                for (int j = 0; j < g.matrizFeromonas.length; j++) {
+                    System.out.print(g.matrizFeromonas[i][j]+" ");
+                }
+                System.out.println("");
+            }
             
             
         } else {
             if(H.ciudadesRecorridas==0){
+            
             Random r = new Random();
-                int random= r.nextInt(H.ciudadesDisponibles.length+1);
+                int random= r.nextInt(H.ciudadesDisponibles.length);
                 H.primera=H.ciudadesDisponibles[random];
                 H.ciudadActual=H.ciudadesDisponibles[random];
                 H.ciudadesDisponibles[random].disponible=false;
@@ -60,7 +67,7 @@ public class Hormiga {
                 // Actualiza el recorrdio.
                 H.Recorrido[H.ciudadesRecorridas]=elegida; // El atributo ciudadesRecorridas es un contador;
                 // Actualiza la cantidad de feromonas recorridas;
-                H.cantFeroRecorridas= H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                H.cantFeroRecorridas= (double)H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
                 // Actualiza el contador de las ciudades recorrdias;
                 H.ciudadesRecorridas++;
                 // Marca la ciudad a la que se movió como no disponible (ya visitada).
@@ -84,7 +91,7 @@ public class Hormiga {
                 // Actualiza el recorrdio.
                 H.Recorrido[H.ciudadesRecorridas]=elegida; // El atributo ciudadesRecorridas es un contador;
                 // Actualiza la cantidad de feromonas recorridas;
-                H.cantFeroRecorridas= H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                H.cantFeroRecorridas= (double)H.cantFeroRecorridas+H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
                 // Actualiza el contador de las ciudades recorrdias;
                 H.ciudadesRecorridas++;
                 // Marca la ciudad a la que se movió como no disponible (ya visitada).
@@ -112,18 +119,18 @@ public class Hormiga {
         }
         // Se le asigna el valor de la probabilidad a cada probabilidad y se actualiza la sumaProb
         for (int i = 0; i < prob.length; i++) {
-            double base1 = H.caminos[H.ciudadActual.numCiudad][prob[i].ciudad.numCiudad].cantFero;
-            double exp1=  H.valoresCalculo[0]; // Valor de alfa;
-            double base2 = (Q/H.caminos[H.ciudadActual.numCiudad][prob[i].ciudad.numCiudad].distancia);
-            double exp2=  H.valoresCalculo[1]; // Valor de beta.
-            prob[i].valorProb=(Math.pow(base1, exp1)*Math.pow(base2, exp2));
-            sumaProb=sumaProb+prob[i].valorProb;
+            double base1 = (double)H.caminos[H.ciudadActual.numCiudad][prob[i].ciudad.numCiudad].cantFero;
+            double exp1=  (double)H.valoresCalculo[0]; // Valor de alfa;
+            double base2 = (double)Q/H.caminos[H.ciudadActual.numCiudad][prob[i].ciudad.numCiudad].distancia;
+            double exp2=  (double)H.valoresCalculo[1]; // Valor de beta.
+            prob[i].valorProb=(double)Math.pow(base1, exp1)*Math.pow(base2, exp2);
+            sumaProb=(double)sumaProb+prob[i].valorProb;
         }
         double maxProb=0;
         Ciudad elegida = prob[0].ciudad; // Solo para inicializarlo.
         for (int i = 0; i < prob.length; i++) {
             if((prob[i].valorProb/sumaProb)>maxProb){
-                maxProb=prob[i].valorProb/sumaProb;
+                maxProb=(double)prob[i].valorProb/sumaProb;
                 elegida=prob[i].ciudad;
             }
         }
@@ -152,19 +159,21 @@ public class Hormiga {
     
     public void actualizarFeromonas(Hormiga H, int cantH, Ciudad elegida, Grafo g){
         double act=0;
-        for (int i = 0; i < H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantHormigas; i++) {
-            act= act + (Q/H.recorridoHPrev);
+        for (int i = 0; i < g.iteracionesSimulacion[0].hormigas.length; i++) {
+            act= (double)act + (double)Q/H.recorridoHPrev;
+            
         }
+        
         //Se actualizan las feromonas de los caminos desde la ciudad actual, hasta la elegida y de la elegida a la ciudad actual.
         H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero=
-                H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero + act;
+                (double)H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero + (double)act;
         H.caminos[elegida.numCiudad][H.ciudadActual.numCiudad].cantFero=
-                H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                (double)H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
         // Se actualiza la matriz de feromonas del grafo.
         g.matrizFeromonas[H.ciudadActual.numCiudad][elegida.numCiudad]=
-                H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                (double)H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
         g.matrizFeromonas[elegida.numCiudad][H.ciudadActual.numCiudad]=
-                H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
+                (double)H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantFero;
         
         // Se actualiza la cantidad de hormigas que han pasado por ese camino.
         H.caminos[H.ciudadActual.numCiudad][elegida.numCiudad].cantHormigas++;
@@ -186,7 +195,13 @@ public class Hormiga {
         // Actualiza las feromonas de todos los caminos para empezar la nueva iteración.
         for (int i = 0; i < g.matrizFeromonas.length; i++) {
             for (int j = 0; j < g.matrizFeromonas[0].length; j++) {
-                g.matrizFeromonas[i][j]=((1-ro)*g.matrizFeromonas[i][j]);
+                g.matrizFeromonas[i][j]=(double)(1-ro)*g.matrizFeromonas[i][j];
+                //HOLAA
+                
+                
+                
+                
+                
             }
         }
     }

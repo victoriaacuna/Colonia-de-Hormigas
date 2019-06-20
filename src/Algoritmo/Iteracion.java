@@ -25,7 +25,7 @@ public class Iteracion {
     
     public Hormiga HormigaConMasFeromonas(Hormiga[] hormigas){
         Hormiga HMasFeromonas = new Hormiga(0);
-        int maxFero=0;
+        double maxFero=0;
         for (int i = 0; i < hormigas.length; i++) {
             if(hormigas[i].cantFeroRecorridas>maxFero){
                 HMasFeromonas=hormigas[i];
