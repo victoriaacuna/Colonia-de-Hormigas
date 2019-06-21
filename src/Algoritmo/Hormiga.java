@@ -30,14 +30,19 @@ public class Hormiga {
     
     public void moverse(Hormiga H, int cantH, Grafo g){
         
+//        System.out.println(H.ciudadesRecorridas +" " + H.ciudadesDisponibles.length);
+//        System.out.println("me moví");
         if(H.ciudadesRecorridas>H.ciudadesDisponibles.length){
             // IMPRIMIR Y PINTAR
+//            System.out.println("Entré donde no debí");
             for (int i = 0; i < g.matrizFeromonas.length; i++) {
                 for (int j = 0; j < g.matrizFeromonas.length; j++) {
                     System.out.print(g.matrizFeromonas[i][j]+" ");
                 }
                 System.out.println("");
             }
+            System.out.println("RECORRI EN TOTAL: " + H.distRecorrida);
+            System.out.println("");
             
             
         } else {
@@ -129,7 +134,8 @@ public class Hormiga {
         double maxProb=0;
         Ciudad elegida = prob[0].ciudad; // Solo para inicializarlo.
         for (int i = 0; i < prob.length; i++) {
-            if((prob[i].valorProb/sumaProb)>maxProb){
+            //PEEEEEn
+            if((prob[i].valorProb/sumaProb)>=maxProb){
                 maxProb=(double)prob[i].valorProb/sumaProb;
                 elegida=prob[i].ciudad;
             }
@@ -190,20 +196,16 @@ public class Hormiga {
 //        }
 //    }
     
-    public void EvaporacionFeromonas(Grafo g){
-        int ro=g.datosSimulacion[2];
+    public Grafo EvaporacionFeromonas(Grafo g){
+        double ro=(double)g.valoresCalculo[2];
         // Actualiza las feromonas de todos los caminos para empezar la nueva iteración.
         for (int i = 0; i < g.matrizFeromonas.length; i++) {
             for (int j = 0; j < g.matrizFeromonas[0].length; j++) {
-                g.matrizFeromonas[i][j]=(double)(1-ro)*g.matrizFeromonas[i][j];
-                //HOLAA
-                
-                
-                
-                
+                g.matrizFeromonas[i][j]=(double)(1-ro)*(double)g.matrizFeromonas[i][j];
                 
             }
         }
+        return g;
     }
     
     public Ciudad[] vectorCiudadesDisponibles(String[] ciudades){
