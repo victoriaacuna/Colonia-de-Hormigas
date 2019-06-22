@@ -1,6 +1,12 @@
 
 package Algoritmo;
 
+import Interfaz.Conclusion;
+import Interfaz.Simulacion;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.Random;
+
 
 public class Grafo {
     
@@ -9,10 +15,14 @@ public class Grafo {
     public static double[] valoresCalculo;
     public int[][] matrizAdyacencia;
     public int[][] matrizDistancias;
-//    public boolean[] visitado;
     public double[][] matrizFeromonas;
     public Iteracion[] iteracionesSimulacion;
     public Circulo[] circulos;
+    public int minDistancia; // Va a guardar la distancia mínima de todas las iteraciones.
+    public Ciudad[] recorridoMin;
+    public Hormiga HMasCorta;
+    public int repeticionesDist;
+    public int itMasCorta;
     
     
     public Grafo(int[][] matrizDistancias, String[] ciudades, int[] datosSimulacion, double[] valoresCalculo){
@@ -22,8 +32,14 @@ public class Grafo {
         this.valoresCalculo=valoresCalculo;
         this.matrizAdyacencia=inicializarMatrizAdyacencia();
 //        this.visitado=inicializarVisitados();
+//        this.matrizFeromonas=matrizFeromonasInicial();
         this.matrizFeromonas=inicializarMatrizFeromonas();
         this.circulos=generarVectorCirculos();
+        this.minDistancia=Integer.MAX_VALUE;
+        this.recorridoMin=new Ciudad[this.ciudades.length];
+        this.HMasCorta=new Hormiga(0);
+        this.repeticionesDist=0;
+        this.itMasCorta=0;
         
     }
     
@@ -41,13 +57,23 @@ public class Grafo {
         return matrizAdyacencia;
     }
     
-//    public boolean[] inicializarVisitados(){
-//        boolean[]visitado = new boolean[this.ciudades.length];
-//        for (int i = 0; i < visitado.length; i++) {
-//            visitado[i]=false;
-//        }
-//        return visitado;
-//    }
+    
+    public double[][] matrizFeromonasInicial(){
+        // Se inicializa el valor de la cantidad de feromonas en cada camino de acuerdo a 1/cantidad de ciudades;
+        double[][] matrizFeromonas = new double[this.ciudades.length][this.ciudades.length];
+        
+        for (int i = 0; i < matrizFeromonas.length; i++) {
+            for (int j = 0; j < matrizFeromonas[0].length; j++) {
+                if(i==j){
+                    matrizFeromonas[i][j]=0.0;
+                } else {
+                    matrizFeromonas[i][j]=(double)1/(this.matrizDistancias[i][j]);
+                }
+            }
+        }
+        
+        return matrizFeromonas;
+    }
     
     public double[][] inicializarMatrizFeromonas(){
         // Se inicializa el valor de la cantidad de feromonas en cada camino de acuerdo a 1/cantidad de ciudades;
@@ -74,7 +100,122 @@ public class Grafo {
         return matrizFeromonas;
     }
     
+    public void generarTextoIteracion(int contIteracion){
+        Hormiga HMasCorta = new Hormiga(0);
+        HMasCorta=this.iteracionesSimulacion[contIteracion].HormigaConDistanciaMasCorta(this.iteracionesSimulacion[contIteracion].hormigas);
+        String conclusion="El menor recorrido conseguido por las  " + this.iteracionesSimulacion[0].hormigas.length+
+                " hormigas \nfue de "+HMasCorta.distRecorrida +" Km y fue el siguiente:\n";
+        for (int i = 0; i < HMasCorta.Recorrido.length; i++) {
+                conclusion+=HMasCorta.Recorrido[i].nombre+"\n";
+            
+        }
+        Simulacion.txtTexto.setText(conclusion);
+    }
     
+    public void generarTextoHormiga(int contIteracion, int contHormiga){
+        
+        String conclusion="La hormiga recorrió " + this.iteracionesSimulacion[contIteracion].hormigas[contHormiga].distRecorrida+
+                " km. Pasando por las\nsiguientes ciudades:\n";
+        for (int i = 0; i < this.iteracionesSimulacion[contIteracion].hormigas[contHormiga].Recorrido.length; i++) {
+            conclusion+=this.iteracionesSimulacion[contIteracion].hormigas[contHormiga].Recorrido[i].nombre + "\n";
+            
+        }
+        Simulacion.txtTexto.setText(conclusion);
+    }
+    
+    public void dibujarLineasIteracion(int contIteracion) {
+        
+        int num1=0, num2=0;
+        Graphics g = Simulacion.Panel.getGraphics();
+        
+        
+        for (int i = 0; i < this.iteracionesSimulacion[0].hormigas.length; i++) {
+            g.setColor(this.elegirColo());
+            for (int j = 0; j < this.iteracionesSimulacion[contIteracion].hormigas[0].Recorrido.length-1; j++) {
+            
+                num1=this.iteracionesSimulacion[contIteracion].hormigas[i].Recorrido[j].numCiudad;
+                num2=this.iteracionesSimulacion[contIteracion].hormigas[i].Recorrido[j+1].numCiudad;;
+                g.drawLine(this.circulos[num1].getX(), this.circulos[num1].getY(), this.circulos[num2].getX(),
+                    this.circulos[num2].getY());
+            }
+            num1=this.iteracionesSimulacion[contIteracion].hormigas[i].Recorrido[0].numCiudad;
+            g.drawLine(this.circulos[num2].getX(), this.circulos[num2].getY(), this.circulos[num1].getX(),
+                    this.circulos[num1].getY());
+        }
+        
+        
+    }
+    
+    public void dibujarLineasHormigas(int contIteracion, int contHormigas){
+        int num1=0, num2=0;
+        Graphics g = Simulacion.Panel.getGraphics();
+        g.setColor(this.elegirColo());
+        
+        for (int i = 0; i < this.iteracionesSimulacion[contIteracion].hormigas[0].Recorrido.length-1; i++) {
+            
+            num1=this.iteracionesSimulacion[contIteracion].hormigas[contHormigas].Recorrido[i].numCiudad;
+            num2=this.iteracionesSimulacion[contIteracion].hormigas[contHormigas].Recorrido[i+1].numCiudad;;
+            g.drawLine(this.circulos[num1].getX(), this.circulos[num1].getY(), this.circulos[num2].getX(),
+                this.circulos[num2].getY());
+        }
+        num1=this.iteracionesSimulacion[contIteracion].hormigas[contHormigas].Recorrido[0].numCiudad;
+        g.drawLine(this.circulos[num2].getX(), this.circulos[num2].getY(), this.circulos[num1].getX(),
+                this.circulos[num1].getY());
+    }
+    
+    public void dibujarLineasConclusion(Hormiga H){
+        int num1=0, num2=0;
+        Graphics g = Conclusion.Panel.getGraphics();
+        g.setColor(this.elegirColo());
+        
+        for (int i = 0; i < H.Recorrido.length-1; i++) {
+            
+            num1=H.Recorrido[i].numCiudad;
+            num2=H.Recorrido[i+1].numCiudad;;
+            g.drawLine(this.circulos[num1].getX(), this.circulos[num1].getY(), this.circulos[num2].getX(),
+                this.circulos[num2].getY());
+        }
+        num1=H.Recorrido[0].numCiudad;
+        g.drawLine(this.circulos[num2].getX(), this.circulos[num2].getY(), this.circulos[num1].getX(),
+                this.circulos[num1].getY());
+    }
+    
+    public Color elegirColo(){
+        Random r = new Random();
+        Color c;
+        switch(r.nextInt(11)){
+            case 1:
+                c=Color.BLACK;
+                break;
+            case 2:
+                c=Color.BLUE;
+                break;
+            case 3:
+                c=Color.CYAN;
+                break;
+            case 4:
+                c=Color.GREEN;
+                break;
+            case 5:
+                c=Color.WHITE;
+                break;
+            case 6:
+                c=Color.YELLOW;
+                break;
+            case 7:
+                c=Color.MAGENTA;
+                break;
+            case 8:
+                c=Color.RED;
+                break;
+            case 9:
+                c=Color.ORANGE;
+                break;
+            default:
+                c=Color.PINK;
+        }
+        return c;
+    }
     
     public Circulo[] generarVectorCirculos(){
         Circulo[] circulos = new Circulo[this.ciudades.length];

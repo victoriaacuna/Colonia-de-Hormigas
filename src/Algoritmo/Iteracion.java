@@ -6,7 +6,6 @@ public class Iteracion {
     public Hormiga[] hormigas;
     public Hormiga HMasCorta; //Guarda la hormiga que recorrió la menor distancia en cada iteración.
     public Hormiga HMasFeromonas; //Guarda la hormiga que recorrió el camino total con más feromonas.
-    public String conclusion; //Lo que va a mostrársele al usuario una vez que termine la iteración.
     
     public Iteracion(Hormiga[] hormigas){
         this.hormigas=hormigas;
@@ -18,6 +17,7 @@ public class Iteracion {
         for (int i = 0; i < hormigas.length; i++) {
             if(hormigas[i].distRecorrida<minDist){
                 HMasCorta=hormigas[i];
+                minDist=hormigas[i].distRecorrida;
             }
         }
         return HMasCorta;
@@ -29,6 +29,7 @@ public class Iteracion {
         for (int i = 0; i < hormigas.length; i++) {
             if(hormigas[i].cantFeroRecorridas>maxFero){
                 HMasFeromonas=hormigas[i];
+                maxFero=hormigas[i].cantFeroRecorridas;
             }
         }
         return HMasFeromonas;

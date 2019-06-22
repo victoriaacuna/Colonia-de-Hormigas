@@ -9,7 +9,7 @@ public class Circulo {
     private int x;
     private int y;
     String ciudad;
-    public static final int d=40; 
+    public static final int d=45; 
     public Color color;
     
     public Circulo(int x, int y, String ciudad) {
@@ -25,4 +25,14 @@ public class Circulo {
         g.setColor(Color.BLACK);
         g.drawString(ciudad, x-d/3, y+d/6); 
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+    
+    
 }
