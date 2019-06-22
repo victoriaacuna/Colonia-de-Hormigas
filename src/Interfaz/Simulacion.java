@@ -133,6 +133,7 @@ public class Simulacion extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Seleccione cómo quiere que funcione el programa");
 
+        btnConclusion.setFont(new java.awt.Font("Malayalam MN", 0, 14)); // NOI18N
         btnConclusion.setText("Conclusión");
         btnConclusion.setEnabled(false);
         btnConclusion.addActionListener(new java.awt.event.ActionListener() {
@@ -224,7 +225,9 @@ public class Simulacion extends javax.swing.JFrame {
                 for (int i = 0; i < this.grafo.ciudades.length; i++) {
                     this.grafo.circulos[i].dibujarCiudad(g);
                 }
-            
+                Feromonas f = new Feromonas(this.grafo,this.contIteracion);
+                f.setLocationRelativeTo(null);
+                f.setVisible(true); 
                 if(this.contIteracion==0){
                     this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].recorridoHPrev=1;
                     this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].inicializarCaminos(this.grafo.matrizDistancias, 
@@ -259,7 +262,10 @@ public class Simulacion extends javax.swing.JFrame {
                     this.btnConclusion.setEnabled(true);
                 }
         } else {
-                
+                Feromonas f = new Feromonas(this.grafo,this.contIteracion);
+                f.setLocationRelativeTo(null);
+                f.setVisible(true);
+            
                 Graphics g = Panel.getGraphics();
                 for (int i = 0; i < this.grafo.ciudades.length; i++) {
                     this.grafo.circulos[i].dibujarCiudad(g);
@@ -337,6 +343,9 @@ public class Simulacion extends javax.swing.JFrame {
                     this.btnComenzarIteracion.setEnabled(false);
                     this.btnContinuar.setEnabled(false);
                     this.btnConclusion.setEnabled(true);
+                    Feromonas f = new Feromonas(this.grafo,this.contIteracion);
+                    f.setLocationRelativeTo(null);
+                    f.setVisible(true);
                 } else {
                     // Si no es la última iteración, le permite al usuario comenzar la siguiente iteración.
                    this.btnContinuar.setEnabled(false);
