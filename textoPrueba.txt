@@ -1,0 +1,106 @@
+Nombre de las ciudades:
+CCS
+BOG
+SF
+GEO
+SANT
+BA
+MAD
+
+Distancia entre las ciudades:
+De CCS a BOG (km):
+1
+De CCS a SF (km):
+2
+De CCS a GEO (km):
+5
+De CCS a SANT (km):
+2
+De CCS a BA (km):
+6
+De CCS a MAD (km):
+3
+De BOG a CCS (km):
+1
+De BOG a SF (km):
+3
+De BOG a GEO (km):
+1
+De BOG a SANT (km):
+10
+De BOG a BA (km):
+4
+De BOG a MAD (km):
+3
+De SF a CCS (km):
+2
+De SF a BOG (km):
+3
+De SF a GEO (km):
+5
+De SF a SANT (km):
+6
+De SF a BA (km):
+2
+De SF a MAD (km):
+4
+De GEO a CCS (km):
+5
+De GEO a BOG (km):
+1
+De GEO a SF (km):
+5
+De GEO a SANT (km):
+1
+De GEO a BA (km):
+2
+De GEO a MAD (km):
+3
+De SANT a CCS (km):
+2
+De SANT a BOG (km):
+10
+De SANT a SF (km):
+6
+De SANT a GEO (km):
+1
+De SANT a BA (km):
+5
+De SANT a MAD (km):
+1
+De BA a CCS (km):
+6
+De BA a BOG (km):
+4
+De BA a SF (km):
+2
+De BA a GEO (km):
+2
+De BA a SANT (km):
+5
+De BA a MAD (km):
+7
+De MAD a CCS (km):
+3
+De MAD a BOG (km):
+3
+De MAD a SF (km):
+4
+De MAD a GEO (km):
+3
+De MAD a SANT (km):
+1
+De MAD a BA (km):
+7
+
+Datos de la simulacion:
+Iteraciones:
+3
+Cantidad de hormigas:
+7
+Grado de importancia de la feromona:
+1.0
+Grado de visibilidad de la ciudad:
+2.0
+Factor de evaporacion:
+0.5
