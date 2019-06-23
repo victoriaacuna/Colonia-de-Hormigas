@@ -3,9 +3,8 @@ package Algoritmo;
 
 
 public class Iteracion {
-    public Hormiga[] hormigas;
-    public Hormiga HMasCorta; //Guarda la hormiga que recorrió la menor distancia en cada iteración.
-    public Hormiga HMasFeromonas; //Guarda la hormiga que recorrió el camino total con más feromonas.
+    private Hormiga[] hormigas;
+    private Hormiga HMasCorta; //Guarda la hormiga que recorrió la menor distancia en cada iteración.
     
     public Iteracion(Hormiga[] hormigas){
         this.hormigas=hormigas;
@@ -15,25 +14,31 @@ public class Iteracion {
         Hormiga HMasCorta = new Hormiga(0);
         int minDist=Integer.MAX_VALUE;
         for (int i = 0; i < hormigas.length; i++) {
-            if(hormigas[i].distRecorrida<minDist){
+            if(hormigas[i].getDistRecorrida()<minDist){
                 HMasCorta=hormigas[i];
-                minDist=hormigas[i].distRecorrida;
+                minDist=hormigas[i].getDistRecorrida();
             }
         }
         return HMasCorta;
     }
     
-    public Hormiga HormigaConMasFeromonas(Hormiga[] hormigas){
-        Hormiga HMasFeromonas = new Hormiga(0);
-        double maxFero=0;
-        for (int i = 0; i < hormigas.length; i++) {
-            if(hormigas[i].cantFeroRecorridas>maxFero){
-                HMasFeromonas=hormigas[i];
-                maxFero=hormigas[i].cantFeroRecorridas;
-            }
-        }
-        return HMasFeromonas;
+    
+
+    public Hormiga[] getHormigas() {
+        return hormigas;
     }
-    
-    
+
+    public void setHormigas(Hormiga[] hormigas) {
+        this.hormigas = hormigas;
+    }
+
+    public Hormiga getHMasCorta() {
+        return HMasCorta;
+    }
+
+    public void setHMasCorta(Hormiga HMasCorta) {
+        this.HMasCorta = HMasCorta;
+    }
+
+
 }

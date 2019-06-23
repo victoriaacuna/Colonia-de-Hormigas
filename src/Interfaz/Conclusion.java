@@ -14,25 +14,25 @@ import java.awt.Graphics;
  */
 public class Conclusion extends javax.swing.JFrame {
 
-    public static Grafo g;
+    private static Grafo g;
     public Conclusion(Grafo g) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.g=g;
-        this.txtRepeticion.setText(""+this.g.repeticionesDist);
-        this.txtDist.setText(""+this.g.HMasCorta.distRecorrida+" Km");
-        this.txtIteracion1.setText(""+(this.g.itMasCorta+1));
+        this.txtRepeticion.setText(""+this.g.getRepeticionesDist());
+        this.txtDist.setText(""+this.g.getHMasCorta().getDistRecorrida()+" Km");
+        this.txtIteracion1.setText(""+(this.g.getItMasCorta()+1));
         String s ="";
-        for (int i = 0; i < this.g.HMasCorta.Recorrido.length; i++) {
-            if(i==this.g.HMasCorta.Recorrido.length-1){
-                s+=this.g.HMasCorta.Recorrido[i].nombre;
+        for (int i = 0; i < this.g.getHMasCorta().getRecorrido().length; i++) {
+            if(i==this.g.getHMasCorta().getRecorrido().length-1){
+                s+=this.g.getHMasCorta().getRecorrido()[i].getNombre();
             }else{
-                s+=this.g.HMasCorta.Recorrido[i].nombre+"-";
+                s+=this.g.getHMasCorta().getRecorrido()[i].getNombre()+"-";
             }
         }
         this.txtRecorrido.setText(s);
-        this.txtHormigas.setText(this.g.iteracionesSimulacion[0].hormigas.length+" por cada iteración.");
+        this.txtHormigas.setText(this.g.getIteracionesSimulacion()[0].getHormigas().length+" por cada iteración.");
     }
 
     
@@ -215,19 +215,17 @@ public class Conclusion extends javax.swing.JFrame {
     private void btnGrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrafoActionPerformed
         
         Graphics g = Panel.getGraphics();
-        for (int i = 0; i < this.g.ciudades.length; i++) {
-            this.g.circulos[i].dibujarCiudad(g);
+        for (int i = 0; i < this.g.getCiudades().length; i++) {
+            this.g.getCirculos()[i].dibujarCiudad(g);
         }
-        this.g.dibujarLineasConclusion(this.g.HMasCorta);
+        this.g.dibujarLineasConclusion(this.g.getHMasCorta());
     }//GEN-LAST:event_btnGrafoActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

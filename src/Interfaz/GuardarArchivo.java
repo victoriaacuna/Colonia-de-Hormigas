@@ -16,11 +16,11 @@ import javax.swing.JFileChooser;
  */
 public class GuardarArchivo extends javax.swing.JFrame {
 
-    static String ciudades[];
-    static double valoresCalculo[];
-    static int datosSimulacion[];
-    static int matrizDistancias [][];
-    static String contenido;
+    static private String ciudades[];
+    static private double valoresCalculo[];
+    static private int datosSimulacion[];
+    static private int matrizDistancias [][];
+    static private String contenido;
     
     JFileChooser seleccionado = new JFileChooser();
     File archivo;

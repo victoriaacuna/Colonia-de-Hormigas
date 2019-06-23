@@ -13,8 +13,8 @@ import java.text.DecimalFormat;
  * @author victoriaacuna
  */
 public class Feromonas extends javax.swing.JFrame {
-    public static int numIt;
-    public static Grafo g;
+    private static int numIt;
+    private static Grafo g;
     
     public Feromonas(Grafo g, int numIt) {
         initComponents();
@@ -22,10 +22,15 @@ public class Feromonas extends javax.swing.JFrame {
         this.numIt=numIt;
         String t="";
         DecimalFormat d = new DecimalFormat("0.00");
-        t=t+"Para la iteracion "+(numIt+1)+", las feromonas en los caminos son:\n";
-        for (int i = 0; i < g.ciudades.length; i++) {
-            for (int j = i+1; j < g.ciudades.length; j++) {
-                t=t+"De "+g.ciudades[i]+" a " +g.ciudades[j] +" hay " + d.format(g.matrizFeromonas[i][j])+ " feromonas.\n";
+        if(numIt==g.getIteracionesSimulacion().length){
+            t=t+"Finalmente, luego de que todas las hormigas pasaran por las distintas ciudades, las feromonas en los\ncaminos son:\n";
+        } else {
+            t=t+"Para la iteracion "+(numIt+1)+", las feromonas en los caminos son:\n";
+        }
+        
+        for (int i = 0; i < g.getCiudades().length; i++) {
+            for (int j = i+1; j < g.getCiudades().length; j++) {
+                t=t+"De "+g.getCiudades()[i]+" a " +g.getCiudades()[j] +" hay " + d.format(g.getMatrizFeromonas()[i][j])+ " feromonas.\n";
                 
             }
         }

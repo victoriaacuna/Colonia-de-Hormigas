@@ -18,15 +18,15 @@ import javax.swing.JOptionPane;
  */
 public class CargarUnaSimulacion extends javax.swing.JFrame {
 
-    public static JFileChooser seleccionado = new JFileChooser();
-    public static File archivo;
-    public static Archivo gestion = new Archivo();
-    public static Archivo a = new Archivo();
-    public static String[] ciudades, ciudadesFinales;
-    public static int[][] matrizDistancias, matrizDistanciaFinal;
-    public static int[] datosSimulacion;
-    public static double[] valoresCalculos;
-    boolean modificado;
+    private static JFileChooser seleccionado = new JFileChooser();
+    private static File archivo;
+    private static Archivo gestion = new Archivo();
+    private static Archivo a = new Archivo();
+    private static String[] ciudades, ciudadesFinales;
+    private static int[][] matrizDistancias, matrizDistanciaFinal;
+    private static int[] datosSimulacion;
+    private static double[] valoresCalculos;
+    private boolean modificado;
     
     public CargarUnaSimulacion() {
         initComponents();
@@ -262,6 +262,88 @@ public class CargarUnaSimulacion extends javax.swing.JFrame {
             }
         });
     }
+
+    public static String[] getCiudades() {
+        return ciudades;
+    }
+
+    public static void setCiudades(String[] ciudades) {
+        CargarUnaSimulacion.ciudades = ciudades;
+    }
+
+    public static String[] getCiudadesFinales() {
+        return ciudadesFinales;
+    }
+
+    public static void setCiudadesFinales(String[] ciudadesFinales) {
+        CargarUnaSimulacion.ciudadesFinales = ciudadesFinales;
+    }
+
+    public static int[][] getMatrizDistancias() {
+        return matrizDistancias;
+    }
+
+    public static void setMatrizDistancias(int[][] matrizDistancias) {
+        CargarUnaSimulacion.matrizDistancias = matrizDistancias;
+    }
+
+    public static int[][] getMatrizDistanciaFinal() {
+        return matrizDistanciaFinal;
+    }
+
+    public static void setMatrizDistanciaFinal(int[][] matrizDistanciaFinal) {
+        CargarUnaSimulacion.matrizDistanciaFinal = matrizDistanciaFinal;
+    }
+
+    public static int[] getDatosSimulacion() {
+        return datosSimulacion;
+    }
+
+    public static void setDatosSimulacion(int[] datosSimulacion) {
+        CargarUnaSimulacion.datosSimulacion = datosSimulacion;
+    }
+
+    public static double[] getValoresCalculos() {
+        return valoresCalculos;
+    }
+
+    public static void setValoresCalculos(double[] valoresCalculos) {
+        CargarUnaSimulacion.valoresCalculos = valoresCalculos;
+    }
+
+    public static File getArchivo() {
+        return archivo;
+    }
+
+    public static void setArchivo(File archivo) {
+        CargarUnaSimulacion.archivo = archivo;
+    }
+
+    public static Archivo getGestion() {
+        return gestion;
+    }
+
+    public static void setGestion(Archivo gestion) {
+        CargarUnaSimulacion.gestion = gestion;
+    }
+
+    public static Archivo getA() {
+        return a;
+    }
+
+    public static void setA(Archivo a) {
+        CargarUnaSimulacion.a = a;
+    }
+
+    public boolean isModificado() {
+        return modificado;
+    }
+
+    public void setModificado(boolean modificado) {
+        this.modificado = modificado;
+    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnModificar;

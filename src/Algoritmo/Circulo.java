@@ -9,8 +9,8 @@ public class Circulo {
     private int x;
     private int y;
     String ciudad;
-    public static final int d=45; 
-    public Color color;
+    private static final int d=45; 
+    private Color color;
     
     public Circulo(int x, int y, String ciudad) {
         this.x = x;
@@ -33,6 +33,31 @@ public class Circulo {
     public int getY() {
         return y;
     }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+    
     
     
 }

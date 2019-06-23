@@ -12,10 +12,10 @@ import java.awt.Graphics;
 public class Simulacion extends javax.swing.JFrame {
 
 
-    public static Grafo grafo;
-    public static Hormiga[][] hormigas;
-    public static int contHormigas, contIteracion;
-    public boolean porIteracion;
+    private static Grafo grafo;
+    private static Hormiga[][] hormigas;
+    private static int contHormigas, contIteracion;
+    private boolean porIteracion;
 
    
     public Simulacion(int[][] matrizDistancias, String[] ciudades, int[] datosSimulacion, double[] valoresCalculo) {
@@ -23,19 +23,18 @@ public class Simulacion extends javax.swing.JFrame {
 
         Grafo grafo = new Grafo(matrizDistancias, ciudades, datosSimulacion, valoresCalculo);
         this.grafo=grafo;
-        this.grafo.iteracionesSimulacion = new Iteracion[grafo.datosSimulacion[0]];
+        this.grafo.setIteracionesSimulacion(new Iteracion[grafo.getDatosSimulacion()[0]]);
         
-        this.hormigas = new Hormiga[grafo.datosSimulacion[1]][grafo.datosSimulacion[1]];
+        this.hormigas = new Hormiga[grafo.getDatosSimulacion()[1]][grafo.getDatosSimulacion()[1]];
         for (int i = 0; i < this.hormigas.length; i++) {
-            this.hormigas[i] = new Hormiga [grafo.datosSimulacion[1]];
+            this.hormigas[i] = new Hormiga [grafo.getDatosSimulacion()[1]];
         }
         
-        for (int i = 0; i < this.grafo.iteracionesSimulacion.length; i++) {
+        for (int i = 0; i < this.grafo.getIteracionesSimulacion().length; i++) {
             this.grafo.iteracionesSimulacion[i]=new Iteracion(hormigas[i]);
-            for (int j = 0; j < this.grafo.iteracionesSimulacion[i].hormigas.length; j++) {
-                this.grafo.iteracionesSimulacion[i].hormigas[j]=new Hormiga(j+1);
-                this.grafo.iteracionesSimulacion[i].hormigas[j].ciudadesDisponibles=
-                        this.grafo.iteracionesSimulacion[i].hormigas[j].vectorCiudadesDisponibles(this.grafo.ciudades);
+            for (int j = 0; j < this.grafo.iteracionesSimulacion[i].getHormigas().length; j++) {
+                this.grafo.iteracionesSimulacion[i].getHormigas()[j]=new Hormiga(j+1);
+                this.grafo.iteracionesSimulacion[i].getHormigas()[j].setCiudadesDisponibles(this.grafo.getIteracionesSimulacion()[i].getHormigas()[j].vectorCiudadesDisponibles(this.grafo.getCiudades()));
             }
         }
         this.contIteracion=0;
@@ -211,8 +210,8 @@ public class Simulacion extends javax.swing.JFrame {
     private void btnMostrarGrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarGrafoActionPerformed
 
         Graphics g = Panel.getGraphics();
-        for (int i = 0; i < this.grafo.ciudades.length; i++) {
-            this.grafo.circulos[i].dibujarCiudad(g);
+        for (int i = 0; i < this.grafo.getCiudades().length; i++) {
+            this.grafo.getCirculos()[i].dibujarCiudad(g);
         }
         
     }//GEN-LAST:event_btnMostrarGrafoActionPerformed
@@ -222,32 +221,28 @@ public class Simulacion extends javax.swing.JFrame {
         if(this.porIteracion){
                 
                 Graphics g = Panel.getGraphics();
-                for (int i = 0; i < this.grafo.ciudades.length; i++) {
-                    this.grafo.circulos[i].dibujarCiudad(g);
+                for (int i = 0; i < this.grafo.getCiudades().length; i++) {
+                    this.grafo.getCirculos()[i].dibujarCiudad(g);
                 }
                 Feromonas f = new Feromonas(this.grafo,this.contIteracion);
                 f.setLocationRelativeTo(null);
                 f.setVisible(true); 
                 if(this.contIteracion==0){
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].recorridoHPrev=1;
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].inicializarCaminos(this.grafo.matrizDistancias, 
-                        this.grafo.matrizFeromonas);
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].setRecorridoHPrev(1);
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].inicializarCaminos(this.grafo.getMatrizDistancias(), 
+                        this.grafo.getMatrizFeromonas());
                 } else {
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].recorridoHPrev=
-                        this.grafo.iteracionesSimulacion[this.contIteracion-1].hormigas[(this.grafo.iteracionesSimulacion[0].hormigas.length-1)].distRecorrida;
-                   this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].caminos=
-                        this.grafo.iteracionesSimulacion[this.contIteracion-1].hormigas[(this.grafo.iteracionesSimulacion[0].hormigas.length-1)].caminos;
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].setRecorridoHPrev(this.grafo.iteracionesSimulacion[this.contIteracion-1].getHormigas()[(this.grafo.iteracionesSimulacion[0].getHormigas().length-1)].getDistRecorrida());
+                   this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].setCaminos(this.grafo.iteracionesSimulacion[this.contIteracion-1].getHormigas()[(this.grafo.iteracionesSimulacion[0].getHormigas().length-1)].getCaminos());
                 }
-                while(contHormigas<this.grafo.iteracionesSimulacion[0].hormigas.length){
+                while(contHormigas<this.grafo.iteracionesSimulacion[0].getHormigas().length){
                     if(this.contHormigas!=0){
-                        this.grafo.iteracionesSimulacion[contIteracion].hormigas[contHormigas].recorridoHPrev=
-                                this.grafo.iteracionesSimulacion[contIteracion].hormigas[contHormigas-1].distRecorrida;
-                        this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[contHormigas].caminos=
-                                this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[contHormigas-1].caminos;
+                        this.grafo.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas].setRecorridoHPrev(this.grafo.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas-1].getDistRecorrida());
+                        this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[contHormigas].setCaminos(this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[contHormigas-1].getCaminos());
                     }
                     //Se mueve la hormiga.
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[this.contHormigas].moverse(this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[this.contHormigas], 
-                            grafo.datosSimulacion[1], this.grafo,this.contIteracion);
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[this.contHormigas].moverse(this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[this.contHormigas], 
+                            grafo.getDatosSimulacion()[1], this.grafo,this.contIteracion);
                     //Se actualizan el contador.
                     this.contHormigas++;
                 }
@@ -260,6 +255,7 @@ public class Simulacion extends javax.swing.JFrame {
                 if(this.contIteracion==this.grafo.iteracionesSimulacion.length){
                     this.btnComenzarIteracion.setEnabled(false);
                     this.btnConclusion.setEnabled(true);
+                    Feromonas fero = new Feromonas(this.grafo,this.contIteracion);
                 }
         } else {
                 Feromonas f = new Feromonas(this.grafo,this.contIteracion);
@@ -267,30 +263,28 @@ public class Simulacion extends javax.swing.JFrame {
                 f.setVisible(true);
             
                 Graphics g = Panel.getGraphics();
-                for (int i = 0; i < this.grafo.ciudades.length; i++) {
-                    this.grafo.circulos[i].dibujarCiudad(g);
+                for (int i = 0; i < this.grafo.getCiudades().length; i++) {
+                    this.grafo.getCirculos()[i].dibujarCiudad(g);
                 }
             
                 this.btnContinuar.setEnabled(true);
                 if(this.contIteracion==0){
                     //Establece la variable recorridoPrev para la primera hori=miga del programa.
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].recorridoHPrev=1;
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].setRecorridoHPrev(1);
                     // Inicializa la matriz camino de la primera hormiga correspondiente a la iteración que se está realizando.
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].inicializarCaminos(this.grafo.matrizDistancias, 
-                        this.grafo.matrizFeromonas);
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].inicializarCaminos(this.grafo.getMatrizDistancias(), 
+                        this.grafo.getMatrizFeromonas());
                 } else {
                     //Establece la variable recorridaPrev como la distancia que recorrió la hormiga anterior a ella.
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].recorridoHPrev=
-                            this.grafo.iteracionesSimulacion[this.contIteracion-1].hormigas[(this.grafo.iteracionesSimulacion[0].hormigas.length-1)].distRecorrida;
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].setRecorridoHPrev(this.grafo.iteracionesSimulacion[this.contIteracion-1].getHormigas()[(this.grafo.iteracionesSimulacion[0].getHormigas().length-1)].getDistRecorrida());
                     // Inicializa la matriz camino de la primera hormiga correspondiente a la iteración que se está realizando;
 //                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].inicializarCaminos(this.grafo.matrizDistancias, 
 //                        this.grafo.matrizFeromonas);
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].caminos=
-                            this.grafo.iteracionesSimulacion[this.contIteracion-1].hormigas[(this.grafo.iteracionesSimulacion[0].hormigas.length-1)].caminos;
+                    this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].setCaminos(this.grafo.iteracionesSimulacion[this.contIteracion-1].getHormigas()[(this.grafo.iteracionesSimulacion[0].getHormigas().length-1)].getCaminos());
                 }
                 //Se mueve la hormiga.
-                this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0].moverse(this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[0], 
-                        grafo.datosSimulacion[1], this.grafo,this.contIteracion);
+                this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0].moverse(this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[0], 
+                        grafo.getDatosSimulacion()[1], this.grafo,this.contIteracion);
                 this.grafo.dibujarLineasHormigas(contIteracion, contHormigas);
                 //Se actualizan el contador.
                 this.grafo.generarTextoHormiga(this.contIteracion, this.contHormigas);
@@ -305,22 +299,20 @@ public class Simulacion extends javax.swing.JFrame {
             
 
             Graphics g = Panel.getGraphics();
-            for (int i = 0; i < this.grafo.ciudades.length; i++) {
-                this.grafo.circulos[i].dibujarCiudad(g);
+            for (int i = 0; i < this.grafo.getCiudades().length; i++) {
+                this.grafo.getCirculos()[i].dibujarCiudad(g);
             }
             // Para los cálculos internos del algoritmo, se actualiza la distancia recorrida por la hormiga anterior.
-            this.grafo.iteracionesSimulacion[contIteracion].hormigas[contHormigas].recorridoHPrev=
-                    this.grafo.iteracionesSimulacion[contIteracion].hormigas[contHormigas-1].distRecorrida;
+            this.grafo.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas].setRecorridoHPrev(this.grafo.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas-1].getDistRecorrida());
             // Se inicializan los caminos de la hormiga que se va a mover.
-            this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[contHormigas].caminos=
-                    this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[contHormigas-1].caminos;            
+            this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[contHormigas].setCaminos(this.grafo.iteracionesSimulacion[this.contIteracion].getHormigas()[contHormigas-1].getCaminos());            
 //            this.grafo.iteracionesSimulacion[contIteracion].hormigas[contHormigas].inicializarCaminos(this.grafo.matrizDistancias, 
 //                    this.grafo.matrizFeromonas);
 
 //             this.grafo.iteracionesSimulacion[this.contIteracion].hormigas[contHormigas].ciudadesRecorridas=0;
             // Se mueve la hormiga.
-            this.grafo.iteracionesSimulacion[contIteracion].hormigas[contHormigas].moverse(this.grafo.iteracionesSimulacion[contIteracion].hormigas[this.contHormigas], 
-                    grafo.datosSimulacion[1], this.grafo,this.contIteracion);
+            this.grafo.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas].moverse(this.grafo.iteracionesSimulacion[contIteracion].getHormigas()[this.contHormigas], 
+                    grafo.getDatosSimulacion()[1], this.grafo,this.contIteracion);
             this.grafo.generarTextoHormiga(this.contIteracion, this.contHormigas);
             
             this.grafo.dibujarLineasHormigas(contIteracion, contHormigas);
@@ -330,7 +322,7 @@ public class Simulacion extends javax.swing.JFrame {
             
             // Se verifica si ya se ha movido la última hormiga de la iteración, en caso de que así sea:
             
-            if(contHormigas==grafo.iteracionesSimulacion[0].hormigas.length){
+            if(contHormigas==grafo.iteracionesSimulacion[0].getHormigas().length){
                 // El contador de hormigas vuelve a estar en 0.
                 this.contHormigas=0;
                 // Se aumenta el contador de iteraciones.
@@ -351,7 +343,7 @@ public class Simulacion extends javax.swing.JFrame {
                    this.btnContinuar.setEnabled(false);
                    this.btnComenzarIteracion.setEnabled(true); 
                    this.grafo=
-                           this.grafo.iteracionesSimulacion[this.contIteracion-1].hormigas[this.grafo.iteracionesSimulacion[this.contIteracion-1].hormigas.length-1].EvaporacionFeromonas(this.grafo);
+                           this.grafo.iteracionesSimulacion[this.contIteracion-1].getHormigas()[this.grafo.iteracionesSimulacion[this.contIteracion-1].getHormigas().length-1].EvaporacionFeromonas(this.grafo);
                 }
             }
             
@@ -406,7 +398,7 @@ public class Simulacion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Simulacion(grafo.matrizDistancias,grafo.ciudades,grafo.datosSimulacion,grafo.valoresCalculo).setVisible(true);
+                new Simulacion(grafo.getMatrizDistancias(),grafo.getCiudades(),grafo.getDatosSimulacion(),grafo.getValoresCalculo()).setVisible(true);
             }
         });
     }

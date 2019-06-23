@@ -8,10 +8,10 @@ import javax.swing.JFileChooser;
 
 public class ModificarArchivo extends javax.swing.JFrame {
 
-    static public int numCiudades, maxCiudades;
-    static public File archivo;
-    static public String [] ciudadesFinales;
-    static public int[][] matrizDistanciaFinal;
+    static private int numCiudades, maxCiudades;
+    static private File archivo;
+    static private String [] ciudadesFinales;
+    static private int[][] matrizDistanciaFinal;
     JFileChooser seleccionado = new JFileChooser();
     Archivo gestion = new Archivo();
     
@@ -256,16 +256,16 @@ public class ModificarArchivo extends javax.swing.JFrame {
             // nueva matriz creada tiene algo de compatibilidad con la matriz original del archivo. En caso de que así sea, 
             // se transfiere los datos.
             for (int i = 0; i < ciudadesFinales.length; i++) {
-                for (int j = 0; j < CargarUnaSimulacion.ciudades.length; j++) {
-                    if(CargarUnaSimulacion.ciudades[j]==ciudadesFinales[i]){
+                for (int j = 0; j < CargarUnaSimulacion.getCiudades().length; j++) {
+                    if(CargarUnaSimulacion.getCiudades()[j]==ciudadesFinales[i]){
                         
                         for (int k = 0; k < ciudadesFinales.length; k++) {
-                            for (int l = 0; l < CargarUnaSimulacion.ciudades.length; l++) {
+                            for (int l = 0; l < CargarUnaSimulacion.getCiudades().length; l++) {
                                 if(matrizDistanciaFinal[i][k]==0){
                                     
-                                    if((i!=k)&&(j!=l)&&(CargarUnaSimulacion.ciudades[l]==ciudadesFinales[k])){
-                                        matrizDistanciaFinal[i][k]=CargarUnaSimulacion.matrizDistancias[j][l];
-                                        matrizDistanciaFinal[k][i]=CargarUnaSimulacion.matrizDistancias[j][l];
+                                    if((i!=k)&&(j!=l)&&(CargarUnaSimulacion.getCiudades()[l]==ciudadesFinales[k])){
+                                        matrizDistanciaFinal[i][k]=CargarUnaSimulacion.getMatrizDistancias()[j][l];
+                                        matrizDistanciaFinal[k][i]=CargarUnaSimulacion.getMatrizDistancias()[j][l];
                                 }
                                 }
                             }  
@@ -273,15 +273,15 @@ public class ModificarArchivo extends javax.swing.JFrame {
                     }
                 }
             }
-            CargarUnaSimulacion.ciudadesFinales=this.ciudadesFinales;
-            CargarUnaSimulacion.matrizDistanciaFinal=matrizDistanciasFinal(this.matrizDistanciaFinal,this.ciudadesFinales);
-            String contenido=Archivo.generarContenidoArchivo(CargarUnaSimulacion.matrizDistanciaFinal, 
-                    CargarUnaSimulacion.ciudadesFinales, CargarUnaSimulacion.valoresCalculos, CargarUnaSimulacion.datosSimulacion);
+            CargarUnaSimulacion.setCiudadesFinales(this.ciudadesFinales);
+            CargarUnaSimulacion.setMatrizDistanciaFinal(matrizDistanciasFinal(this.matrizDistanciaFinal,this.ciudadesFinales));
+            String contenido=Archivo.generarContenidoArchivo(CargarUnaSimulacion.getMatrizDistanciaFinal(), 
+                    CargarUnaSimulacion.getCiudadesFinales(), CargarUnaSimulacion.getValoresCalculos(), CargarUnaSimulacion.getDatosSimulacion());
             if(this.seleccionado.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION){
                 this.archivo = seleccionado.getSelectedFile();
                 if(this.archivo.getName().endsWith("txt")){
                     gestion.GuardarTexto(archivo, contenido);
-                    CargarUnaSimulacion.archivo=this.archivo;
+                    CargarUnaSimulacion.setArchivo(this.archivo);
                     CargarUnaSimulacion.txtArchivo.setText(contenido);
                     this.setVisible(false);
                 }else{

@@ -7,10 +7,10 @@ import javax.swing.JOptionPane;
 
 
 public class CreacionCiudades extends javax.swing.JFrame {
-    static String ciudades[];
-    static double valoresCalculo[];
-    static int datosSimulacion[];
-    static NuevaSimulacion simulacion;
+    static private String ciudades[];
+    static private double valoresCalculo[];
+    static private int datosSimulacion[];
+    static private NuevaSimulacion simulacion;
     int matrizDistancias [][];
 
     public CreacionCiudades(String[] ciudades, double[] valoresCalculo, int[] datosSimulacion, NuevaSimulacion simulacion) {

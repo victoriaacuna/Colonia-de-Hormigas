@@ -7,9 +7,9 @@ import javax.swing.JOptionPane;
 
 public class NuevaSimulacion extends javax.swing.JFrame {
     
-    double rho, alfa, beta;
-    int numCiudades=0;
-    int maxCiudades=20, minCiudades=4;
+    private double rho, alfa, beta;
+    private int numCiudades=0;
+    private int maxCiudades=20, minCiudades=4;
     
     public NuevaSimulacion() {
         initComponents();

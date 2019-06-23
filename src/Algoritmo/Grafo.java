@@ -10,19 +10,20 @@ import java.util.Random;
 
 public class Grafo {
     
-    public String[] ciudades;
-    public int[] datosSimulacion;
-    public static double[] valoresCalculo;
-    public int[][] matrizAdyacencia;
-    public int[][] matrizDistancias;
-    public double[][] matrizFeromonas;
+    private String[] ciudades;
+    private int[] datosSimulacion;
+    
+    private int[][] matrizAdyacencia;
+    private int[][] matrizDistancias;
+    private Circulo[] circulos;
+    private int minDistancia; // Va a guardar la distancia mínima de todas las iteraciones.
+    private Ciudad[] recorridoMin;
+    private Hormiga HMasCorta;
+    private int repeticionesDist;
+    private int itMasCorta;
     public Iteracion[] iteracionesSimulacion;
-    public Circulo[] circulos;
-    public int minDistancia; // Va a guardar la distancia mínima de todas las iteraciones.
-    public Ciudad[] recorridoMin;
-    public Hormiga HMasCorta;
-    public int repeticionesDist;
-    public int itMasCorta;
+    public static double[] valoresCalculo;
+    public double[][] matrizFeromonas;
     
     
     public Grafo(int[][] matrizDistancias, String[] ciudades, int[] datosSimulacion, double[] valoresCalculo){
@@ -102,11 +103,11 @@ public class Grafo {
     
     public void generarTextoIteracion(int contIteracion){
         Hormiga HMasCorta = new Hormiga(0);
-        HMasCorta=this.iteracionesSimulacion[contIteracion].HormigaConDistanciaMasCorta(this.iteracionesSimulacion[contIteracion].hormigas);
-        String conclusion="El menor recorrido conseguido por las  " + this.iteracionesSimulacion[0].hormigas.length+
-                " hormigas \nfue de "+HMasCorta.distRecorrida +" Km y fue el siguiente:\n";
-        for (int i = 0; i < HMasCorta.Recorrido.length; i++) {
-                conclusion+=HMasCorta.Recorrido[i].nombre+"\n";
+        HMasCorta=this.iteracionesSimulacion[contIteracion].HormigaConDistanciaMasCorta(this.iteracionesSimulacion[contIteracion].getHormigas());
+        String conclusion="El menor recorrido conseguido por las  " + this.iteracionesSimulacion[0].getHormigas().length+
+                " hormigas \nfue de "+HMasCorta.getDistRecorrida() +" Km y fue el siguiente:\n";
+        for (int i = 0; i < HMasCorta.getRecorrido().length; i++) {
+                conclusion+=HMasCorta.getRecorrido()[i].getNombre()+"\n";
             
         }
         Simulacion.txtTexto.setText(conclusion);
@@ -114,10 +115,10 @@ public class Grafo {
     
     public void generarTextoHormiga(int contIteracion, int contHormiga){
         
-        String conclusion="La hormiga recorrió " + this.iteracionesSimulacion[contIteracion].hormigas[contHormiga].distRecorrida+
+        String conclusion="La hormiga recorrió " + this.iteracionesSimulacion[contIteracion].getHormigas()[contHormiga].getDistRecorrida()+
                 " km. Pasando por las\nsiguientes ciudades:\n";
-        for (int i = 0; i < this.iteracionesSimulacion[contIteracion].hormigas[contHormiga].Recorrido.length; i++) {
-            conclusion+=this.iteracionesSimulacion[contIteracion].hormigas[contHormiga].Recorrido[i].nombre + "\n";
+        for (int i = 0; i < this.iteracionesSimulacion[contIteracion].getHormigas()[contHormiga].getRecorrido().length; i++) {
+            conclusion+=this.iteracionesSimulacion[contIteracion].getHormigas()[contHormiga].getRecorrido()[i].getNombre() + "\n";
             
         }
         Simulacion.txtTexto.setText(conclusion);
@@ -129,16 +130,16 @@ public class Grafo {
         Graphics g = Simulacion.Panel.getGraphics();
         
         
-        for (int i = 0; i < this.iteracionesSimulacion[0].hormigas.length; i++) {
-            g.setColor(this.elegirColo());
-            for (int j = 0; j < this.iteracionesSimulacion[contIteracion].hormigas[0].Recorrido.length-1; j++) {
+        for (int i = 0; i < this.iteracionesSimulacion[0].getHormigas().length; i++) {
+            g.setColor(this.elegirColor());
+            for (int j = 0; j < this.iteracionesSimulacion[contIteracion].getHormigas()[0].getRecorrido().length-1; j++) {
             
-                num1=this.iteracionesSimulacion[contIteracion].hormigas[i].Recorrido[j].numCiudad;
-                num2=this.iteracionesSimulacion[contIteracion].hormigas[i].Recorrido[j+1].numCiudad;;
+                num1=this.iteracionesSimulacion[contIteracion].getHormigas()[i].getRecorrido()[j].getNumCiudad();
+                num2=this.iteracionesSimulacion[contIteracion].getHormigas()[i].getRecorrido()[j+1].getNumCiudad();
                 g.drawLine(this.circulos[num1].getX(), this.circulos[num1].getY(), this.circulos[num2].getX(),
                     this.circulos[num2].getY());
             }
-            num1=this.iteracionesSimulacion[contIteracion].hormigas[i].Recorrido[0].numCiudad;
+            num1=this.iteracionesSimulacion[contIteracion].getHormigas()[i].getRecorrido()[0].getNumCiudad();
             g.drawLine(this.circulos[num2].getX(), this.circulos[num2].getY(), this.circulos[num1].getX(),
                     this.circulos[num1].getY());
         }
@@ -149,16 +150,16 @@ public class Grafo {
     public void dibujarLineasHormigas(int contIteracion, int contHormigas){
         int num1=0, num2=0;
         Graphics g = Simulacion.Panel.getGraphics();
-        g.setColor(this.elegirColo());
+        g.setColor(this.elegirColor());
         
-        for (int i = 0; i < this.iteracionesSimulacion[contIteracion].hormigas[0].Recorrido.length-1; i++) {
+        for (int i = 0; i < this.iteracionesSimulacion[contIteracion].getHormigas()[0].getRecorrido().length-1; i++) {
             
-            num1=this.iteracionesSimulacion[contIteracion].hormigas[contHormigas].Recorrido[i].numCiudad;
-            num2=this.iteracionesSimulacion[contIteracion].hormigas[contHormigas].Recorrido[i+1].numCiudad;;
+            num1=this.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas].getRecorrido()[i].getNumCiudad();
+            num2=this.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas].getRecorrido()[i+1].getNumCiudad();
             g.drawLine(this.circulos[num1].getX(), this.circulos[num1].getY(), this.circulos[num2].getX(),
                 this.circulos[num2].getY());
         }
-        num1=this.iteracionesSimulacion[contIteracion].hormigas[contHormigas].Recorrido[0].numCiudad;
+        num1=this.iteracionesSimulacion[contIteracion].getHormigas()[contHormigas].getRecorrido()[0].getNumCiudad();
         g.drawLine(this.circulos[num2].getX(), this.circulos[num2].getY(), this.circulos[num1].getX(),
                 this.circulos[num1].getY());
     }
@@ -166,21 +167,21 @@ public class Grafo {
     public void dibujarLineasConclusion(Hormiga H){
         int num1=0, num2=0;
         Graphics g = Conclusion.Panel.getGraphics();
-        g.setColor(this.elegirColo());
+        g.setColor(this.elegirColor());
         
-        for (int i = 0; i < H.Recorrido.length-1; i++) {
+        for (int i = 0; i < H.getRecorrido().length-1; i++) {
             
-            num1=H.Recorrido[i].numCiudad;
-            num2=H.Recorrido[i+1].numCiudad;;
+            num1=H.getRecorrido()[i].getNumCiudad();
+            num2=H.getRecorrido()[i+1].getNumCiudad();
             g.drawLine(this.circulos[num1].getX(), this.circulos[num1].getY(), this.circulos[num2].getX(),
                 this.circulos[num2].getY());
         }
-        num1=H.Recorrido[0].numCiudad;
+        num1=H.getRecorrido()[0].getNumCiudad();
         g.drawLine(this.circulos[num2].getX(), this.circulos[num2].getY(), this.circulos[num1].getX(),
                 this.circulos[num1].getY());
     }
     
-    public Color elegirColo(){
+    public Color elegirColor(){
         Random r = new Random();
         Color c;
         switch(r.nextInt(11)){
@@ -400,6 +401,111 @@ public class Grafo {
         return circulos;
     }
 
+    public String[] getCiudades() {
+        return ciudades;
+    }
+
+    public void setCiudades(String[] ciudades) {
+        this.ciudades = ciudades;
+    }
+
+    public int[] getDatosSimulacion() {
+        return datosSimulacion;
+    }
+
+    public void setDatosSimulacion(int[] datosSimulacion) {
+        this.datosSimulacion = datosSimulacion;
+    }
+
+    public static double[] getValoresCalculo() {
+        return valoresCalculo;
+    }
+
+    public static void setValoresCalculo(double[] valoresCalculo) {
+        Grafo.valoresCalculo = valoresCalculo;
+    }
+
+    public int[][] getMatrizAdyacencia() {
+        return matrizAdyacencia;
+    }
+
+    public void setMatrizAdyacencia(int[][] matrizAdyacencia) {
+        this.matrizAdyacencia = matrizAdyacencia;
+    }
+
+    public int[][] getMatrizDistancias() {
+        return matrizDistancias;
+    }
+
+    public void setMatrizDistancias(int[][] matrizDistancias) {
+        this.matrizDistancias = matrizDistancias;
+    }
+
+    public double[][] getMatrizFeromonas() {
+        return matrizFeromonas;
+    }
+
+    public void setMatrizFeromonas(double[][] matrizFeromonas) {
+        this.matrizFeromonas = matrizFeromonas;
+    }
+
+    public Iteracion[] getIteracionesSimulacion() {
+        return iteracionesSimulacion;
+    }
+
+    public void setIteracionesSimulacion(Iteracion[] iteracionesSimulacion) {
+        this.iteracionesSimulacion = iteracionesSimulacion;
+    }
+
+    public Circulo[] getCirculos() {
+        return circulos;
+    }
+
+    public void setCirculos(Circulo[] circulos) {
+        this.circulos = circulos;
+    }
+
+    public int getMinDistancia() {
+        return minDistancia;
+    }
+
+    public void setMinDistancia(int minDistancia) {
+        this.minDistancia = minDistancia;
+    }
+
+    public Ciudad[] getRecorridoMin() {
+        return recorridoMin;
+    }
+
+    public void setRecorridoMin(Ciudad[] recorridoMin) {
+        this.recorridoMin = recorridoMin;
+    }
+
+    public Hormiga getHMasCorta() {
+        return HMasCorta;
+    }
+
+    public void setHMasCorta(Hormiga HMasCorta) {
+        this.HMasCorta = HMasCorta;
+    }
+
+    public int getRepeticionesDist() {
+        return repeticionesDist;
+    }
+
+    public void setRepeticionesDist(int repeticionesDist) {
+        this.repeticionesDist = repeticionesDist;
+    }
+
+    public int getItMasCorta() {
+        return itMasCorta;
+    }
+
+    public void setItMasCorta(int itMasCorta) {
+        this.itMasCorta = itMasCorta;
+    }
+
+    
     
 }
 
