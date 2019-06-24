@@ -20,7 +20,7 @@ public class Conclusion extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.g=g;
-        this.txtRepeticion.setText(""+this.g.getRepeticionesDist());
+        this.txtRepeticion.setText(""+(this.g.getRepeticionesDist()-1));
         this.txtDist.setText(""+this.g.getHMasCorta().getDistRecorrida()+" Km");
         this.txtIteracion1.setText(""+(this.g.getItMasCorta()+1));
         String s ="";
